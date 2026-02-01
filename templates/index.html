@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Auth System</title>
+    <link rel="stylesheet" href="/static/style.css">
+</head>
+<body>
+
+<div class="container">
+    <h2>Authentication System</h2>
+
+    <div class="tabs">
+        <button onclick="showTab('login')">Login</button>
+        <button onclick="showTab('register')">Register</button>
+        <button onclick="showTab('profile')">Profile</button>
+    </div>
+
+    <!-- LOGIN -->
+    <div id="login" class="card">
+        <h3>Login</h3>
+        <input type="email" id="loginEmail" placeholder="Email">
+        <input type="password" id="loginPassword" placeholder="Password">
+        <button onclick="login()">Login</button>
+        <p id="loginMsg"></p>
+    </div>
+
+    <!-- REGISTER -->
+    <div id="register" class="card hidden">
+        <h3>Register</h3>
+        <input type="email" id="regEmail" placeholder="Email">
+        <input type="password" id="regPassword" placeholder="Password">
+        <button onclick="register()">Register</button>
+        <p id="regMsg"></p>
+    </div>
+
+    <!-- PROFILE -->
+    <div id="profile" class="card hidden">
+        <h3>Profile</h3>
+        <button onclick="loadProfile()">Load Profile</button>
+        <pre id="profileData"></pre>
+    </div>
+</div>
+
+<script src="/static/script.js"></script>
+</body>
+</html>

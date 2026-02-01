@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>User Dashboard</title>
+    <link rel="stylesheet" href="/static/style.css">
+</head>
+
+<body>
+    <script>
+        if (!localStorage.getItem("token")) {
+            window.location.href = "/";
+        }
+    </script>
+
+    <div class="container">
+        <h2>User Dashboard</h2>
+
+        <div class="card">
+            <button onclick="loadProfile()">Load My Profile</button>
+            <pre id="profileData">Loading...</pre>
+            <button class="logout" onclick="logout()">Logout</button>
+        </div>
+    </div>
+
+    <script src="/static/script.js"></script>
+    <script>
+        loadProfile(); // auto load on page open
+    </script>
+</body>
+
+</html>
