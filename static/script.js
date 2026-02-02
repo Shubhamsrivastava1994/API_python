@@ -1,53 +1,78 @@
-const API = "const API = "https://api-python-myhh.onrender.com";
-let token = "";
+// 🔹 CHANGE THIS TO YOUR RENDER URL
+const API = "https://api-python-myhh.onrender.com";
 
+/* =========================
+   TAB SWITCH FUNCTION
+========================= */
 function showTab(tab) {
-    document.querySelectorAll(".card").forEach(c => c.classList.add("hidden"));
-    document.getElementById(tab).classList.remove("hidden");
+    document.querySelectorAll(".card").forEach(card => {
+        card.classList.add("hidden");
+    });
+
+    const active = document.getElementById(tab);
+    if (active) {
+        active.classList.remove("hidden");
+    }
 }
 
-// REGISTER
+/* =========================
+   REGISTER
+========================= */
 function register() {
     fetch(`${API}/register`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
-            email: regEmail.value,
-            password: regPassword.value
+            email: document.getElementById("regEmail").value,
+            password: document.getElementById("regPassword").value
         })
     })
     .then(res => res.json())
     .then(data => {
-        regMsg.innerText = data.message;
+        document.getElementById("regMsg").innerText = data.message;
+        showTab("login");
+    })
+    .catch(err => {
+        document.getElementById("regMsg").innerText = "Register failed";
     });
 }
 
-// LOGIN
+/* =========================
+   LOGIN
+========================= */
 function login() {
     fetch(`${API}/login`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
-            email: loginEmail.value,
-            password: loginPassword.value
+            email: document.getElementById("loginEmail").value,
+            password: document.getElementById("loginPassword").value
         })
     })
     .then(res => res.json())
     .then(data => {
         if (data.token) {
-            localStorage.setItem("token", data.token); // 🔐 save token
-            window.location.href = "/dashboard";       // 🚀 redirect
+            localStorage.setItem("token", data.token);
+            document.getElementById("loginMsg").innerText = "Login successful ✅";
+            showTab("profile");
+            loadProfile();
         } else {
-            loginMsg.innerText = data.message;
+            document.getElementById("loginMsg").innerText = data.message;
         }
+    })
+    .catch(() => {
+        document.getElementById("loginMsg").innerText = "Login failed";
     });
 }
-// PROFILE
+
+/* =========================
+   LOAD PROFILE
+========================= */
 function loadProfile() {
     const token = localStorage.getItem("token");
 
     if (!token) {
-        window.location.href = "/";
+        document.getElementById("profileData").innerText = "Not logged in";
         return;
     }
 
@@ -58,13 +83,10 @@ function loadProfile() {
     })
     .then(res => res.json())
     .then(data => {
-        profileData.innerText = JSON.stringify(data, null, 2);
+        document.getElementById("profileData").innerText =
+            JSON.stringify(data, null, 2);
+    })
+    .catch(() => {
+        document.getElementById("profileData").innerText = "Failed to load profile";
     });
 }
-
-function logout() {
-    localStorage.removeItem("token");
-    window.location.href = "/";
-}
-
-
