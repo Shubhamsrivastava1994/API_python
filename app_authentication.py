@@ -6,6 +6,8 @@ import os
 from datetime import datetime, timedelta, timezone
 from dotenv import load_dotenv
 from flask import render_template
+from flask_cors import CORS
+
 
 
 # =========================
@@ -22,6 +24,7 @@ if not SECRET_KEY:
 # 🔹 APP INIT
 # =========================
 app = Flask(__name__)
+CORS(app)
 
 # =========================
 # 🔹 MONGODB
