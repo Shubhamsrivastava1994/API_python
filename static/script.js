@@ -1,4 +1,5 @@
-const API = "http://127.0.0.1:5000";
+const API = "const API = "https://api-python-myhh.onrender.com";
+";
 let token = "";
 
 function showTab(tab) {
