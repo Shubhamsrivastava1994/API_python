@@ -6,4 +6,5 @@ bcrypt
 python-dotenv
 gunicorn
 flask-cors
+cloudinary
 
