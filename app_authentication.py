@@ -1,12 +1,17 @@
+from bson import ObjectId
+from functools import wraps
 from flask import Flask, request, jsonify
 from pymongo import MongoClient
 import bcrypt
 import jwt
 import os
+import cloudinary
+import cloudinary.uploader
 from datetime import datetime, timedelta, timezone
 from dotenv import load_dotenv
 from flask import render_template
 from flask_cors import CORS
+
 
 
 
@@ -25,21 +30,146 @@ if not SECRET_KEY:
 # =========================
 app = Flask(__name__)
 CORS(app)
+# =========================
+from functools import wraps
+from bson import ObjectId
+
+def token_required(f):
+    @wraps(f)
+    def decorated(*args, **kwargs):
+        auth_header = request.headers.get("Authorization")
+
+        if not auth_header:
+            return jsonify({"message": "Authorization header missing"}), 401
+
+        try:
+            # ✅ Bearer token safely handle
+            if auth_header.startswith("Bearer "):
+                token = auth_header.split(" ", 1)[1]
+            else:
+                token = auth_header.strip()
+
+            decoded = jwt.decode(token, SECRET_KEY, algorithms=["HS256"])
+
+            user = users.find_one({
+                "_id": ObjectId(decoded["user_id"])
+            })
+
+            if not user:
+                return jsonify({"message": "User not found"}), 404
+
+        except jwt.ExpiredSignatureError:
+            return jsonify({"message": "Token expired"}), 401
+        except Exception as e:
+            print("JWT ERROR:", e)  # 👈 debug help
+            return jsonify({"message": "Invalid token"}), 401
+
+        return f(user, *args, **kwargs)
+    return decorated
+
 
 # =========================
 # 🔹 MONGODB
 # =========================
-client = MongoClient(
-    "mongodb+srv://shubham_new:shubham_new@cluster0.89snqls.mongodb.net/"
-)
+client = MongoClient(os.getenv("MONGO_URI"))
+
 db = client.Shubham_dbs
 users = db.users
+# ==============cloudnearary config
+cloudinary.config(
+    cloud_name=os.getenv("CLOUDINARY_CLOUD_NAME"),
+    api_key=os.getenv("CLOUDINARY_API_KEY"),
+    api_secret=os.getenv("CLOUDINARY_API_SECRET")
+)
+# ========================
+# Upload Profile Photo API
+# ========================
+@app.route("/upload_photo", methods=["POST"])
+@token_required
+def upload_profile_photo(user):
+
+    if "photo" not in request.files:
+        return jsonify({"message": "Photo file required"}), 400
+
+    photo = request.files["photo"]
+
+    if not photo.mimetype.startswith("image/"):
+        return jsonify({"message": "Invalid image format"}), 400
+
+    # Purani photo delete (agar ho)
+    if "profilePhoto" in user:
+        cloudinary.uploader.destroy(user["profilePhoto"]["public_id"])
+
+    # Cloudinary upload
+    result = cloudinary.uploader.upload(
+        photo,
+        folder="profile_photos",
+        public_id=str(user["_id"]),
+        overwrite=True
+    )
+
+    photo_data = {
+        "url": result["secure_url"],
+        "public_id": result["public_id"]
+    }
+
+    users.update_one(
+        {"_id": user["_id"]},
+        {"$set": {"profilePhoto": photo_data}}
+    )
+
+    return jsonify({
+        "message": "Profile photo uploaded successfully",
+        "photoUrl": photo_data["url"]
+    }), 200
 
 # =========================
 # 🔹 REGISTER API
 # =========================
 @app.route("/register", methods=["POST"])
 def register():
+
+    email = request.form.get("email")
+    password = request.form.get("password")
+    photo = request.files.get("photo")  # optional
+
+    if not email or not password:
+        return jsonify({"message": "Email and password required"}), 400
+
+    if users.find_one({"email": email}):
+        return jsonify({"message": "User already exists"}), 400
+
+    # 🔐 password hash
+    hashed_password = bcrypt.hashpw(
+        password.encode("utf-8"),
+        bcrypt.gensalt()
+    )
+
+    user_data = {
+        "email": email,
+        "password": hashed_password,
+        "createdAt": datetime.now(timezone.utc)
+    }
+
+    # 📸 PHOTO UPLOAD (optional)
+    if photo:
+        if not photo.mimetype.startswith("image/"):
+            return jsonify({"message": "Invalid image format"}), 400
+
+        upload_result = cloudinary.uploader.upload(
+            photo,
+            folder="profile_photos"
+        )
+
+        user_data["profilePhoto"] = {
+            "url": upload_result["secure_url"],
+            "public_id": upload_result["public_id"]
+        }
+
+    users.insert_one(user_data)
+
+    return jsonify({"message": "User registered successfully"}), 201
+
     data = request.get_json(force=True)
 
     email = data.get("email")
