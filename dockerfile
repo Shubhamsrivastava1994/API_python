@@ -26,5 +26,5 @@ COPY . .
 # 🔹 Expose Flask port
 EXPOSE 5000
 
-# 🔹 Run app
-CMD ["python", "app_authentication.py"]
+# 🔹 Run app with Gunicorn (production-ready)
+CMD ["gunicorn", "-b", "0.0.0.0:5000", "app_authentication:app"]
