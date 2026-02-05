@@ -15,7 +15,8 @@
         <div class="tabs">
             <button onclick="showTab('login')">Login</button>
             <button onclick="showTab('register')">Register</button>
-            <button onclick="showTab('profile')">Profile</button>
+            <!-- <button onclick="showTab('profile')">Profile</button> -->
+            <button onclick="showTab('homepage')">Home Page</button>
         </div>
 
         <!-- LOGIN -->
@@ -28,10 +29,9 @@
         </div>
 
         <!-- REGISTER -->
-        <!-- REGISTER -->
         <div id="register" class="card hidden">
             <h3>Register</h3>
-
+            <input type="name" id="regName" placeholder="Full Name">
             <input type="email" id="regEmail" placeholder="Email">
             <input type="password" id="regPassword" placeholder="Password">
 
@@ -42,11 +42,17 @@
             <p id="regMsg"></p>
         </div>
 
-
         <!-- PROFILE -->
         <div id="profile" class="card hidden">
             <h3>Profile</h3>
             <button onclick="loadProfile()">Load Profile</button>
+            <pre id="profileData"></pre>
+        </div>
+
+        <!-- Home Page -->
+        <div id="homepage" class="card hidden">
+            <h3>Home Page</h3>
+            <button onclick="homePage()">Home Page</button>
             <pre id="profileData"></pre>
         </div>
     </div>

@@ -15,6 +15,7 @@ from flask_cors import CORS
 
 
 
+
 # =========================
 # 🔹 LOAD ENV
 # =========================
@@ -31,42 +32,6 @@ if not SECRET_KEY:
 app = Flask(__name__)
 CORS(app)
 # =========================
-from functools import wraps
-from bson import ObjectId
-
-def token_required(f):
-    @wraps(f)
-    def decorated(*args, **kwargs):
-        auth_header = request.headers.get("Authorization")
-
-        if not auth_header:
-            return jsonify({"message": "Authorization header missing"}), 401
-
-        try:
-            # ✅ Bearer token safely handle
-            if auth_header.startswith("Bearer "):
-                token = auth_header.split(" ", 1)[1]
-            else:
-                token = auth_header.strip()
-
-            decoded = jwt.decode(token, SECRET_KEY, algorithms=["HS256"])
-
-            user = users.find_one({
-                "_id": ObjectId(decoded["user_id"])
-            })
-
-            if not user:
-                return jsonify({"message": "User not found"}), 404
-
-        except jwt.ExpiredSignatureError:
-            return jsonify({"message": "Token expired"}), 401
-        except Exception as e:
-            print("JWT ERROR:", e)  # 👈 debug help
-            return jsonify({"message": "Invalid token"}), 401
-
-        return f(user, *args, **kwargs)
-    return decorated
-
 
 # =========================
 # 🔹 MONGODB
@@ -81,47 +46,6 @@ cloudinary.config(
     api_key=os.getenv("CLOUDINARY_API_KEY"),
     api_secret=os.getenv("CLOUDINARY_API_SECRET")
 )
-# ========================
-# Upload Profile Photo API
-# ========================
-@app.route("/upload_photo", methods=["POST"])
-@token_required
-def upload_profile_photo(user):
-
-    if "photo" not in request.files:
-        return jsonify({"message": "Photo file required"}), 400
-
-    photo = request.files["photo"]
-
-    if not photo.mimetype.startswith("image/"):
-        return jsonify({"message": "Invalid image format"}), 400
-
-    # Purani photo delete (agar ho)
-    if "profilePhoto" in user:
-        cloudinary.uploader.destroy(user["profilePhoto"]["public_id"])
-
-    # Cloudinary upload
-    result = cloudinary.uploader.upload(
-        photo,
-        folder="profile_photos",
-        public_id=str(user["_id"]),
-        overwrite=True
-    )
-
-    photo_data = {
-        "url": result["secure_url"],
-        "public_id": result["public_id"]
-    }
-
-    users.update_one(
-        {"_id": user["_id"]},
-        {"$set": {"profilePhoto": photo_data}}
-    )
-
-    return jsonify({
-        "message": "Profile photo uploaded successfully",
-        "photoUrl": photo_data["url"]
-    }), 200
 
 # =========================
 # 🔹 REGISTER API
@@ -131,6 +55,7 @@ def register():
 
     email = request.form.get("email")
     password = request.form.get("password")
+    name = request.form.get("name")
     photo = request.files.get("photo")  # optional
 
     if not email or not password:
@@ -146,6 +71,7 @@ def register():
     )
 
     user_data = {
+        "name":name,
         "email": email,
         "password": hashed_password,
         "createdAt": datetime.now(timezone.utc)
@@ -170,38 +96,65 @@ def register():
 
     return jsonify({"message": "User registered successfully"}), 201
 
-    data = request.get_json(force=True)
-
-    email = data.get("email")
-    password = data.get("password")
-
-    if not email or not password:
-        return jsonify({"message": "Email and password required"}), 400
-
-    if users.find_one({"email": email}):
-        return jsonify({"message": "User already exists"}), 400
-
-    hashed_password = bcrypt.hashpw(
-        password.encode("utf-8"),
-        bcrypt.gensalt()
-    )
-
-    users.insert_one({
-        "email": email,
-        "password": hashed_password
-    })
-
-    return jsonify({"message": "User registered successfully"}), 201
+   
 # ==============html=====
 @app.route("/")
 def home():
     return render_template("index.html")
 
-
 @app.route("/dashboard")
 def dashboard():
     return render_template("dashboard.html")
+
+@app.route("/home_page")
+def home_page():
+    return render_template("home_page.html")
+# =====================
+# Fetch user details for home page
+@app.route("/api/home_page")
+def home_page_api():
+
+    email = request.args.get("email")
+
+    print("EMAIL FROM API:", email)
+
+    user = db.users.find_one({"email": email})
+
+    if not user:
+        return jsonify({"error": "User not found"}), 404
+
+    return jsonify({
+        "email": user["email"],
+        "image":user["profilePhoto"]["url"],
+        "name":user["name"],
+    })
+
+
+@app.route("/user_profile", methods=["GET"])
+def loadProfile2():
+    email = request.args.get("email")
+    # print("✅ /user_profile API HIT", email)
+
+    if not email:
+        return jsonify({"error": "Email required"}), 400
+
+    user_data = users.find_one({"email": email})
+
+    if not user_data:
+        return jsonify({"error": "User not found"}), 404
+
+    return jsonify({
+        "message": "Profile loaded",
+        "user_email": user_data["email"],
+        "profile_image":user_data["profilePhoto"]["url"]
+    }), 200
+
 # ============================
+# logout API
+
+@app.route("/logout", methods=["POST"])
+def logout():
+    return jsonify({"message": "Logged out successfully"})
 
 # =========================
 # 🔹 LOGIN API
@@ -244,7 +197,6 @@ def login():
 @app.route("/profile", methods=["GET"])
 def profile():
     auth_header = request.headers.get("Authorization")
-
     if not auth_header:
         return jsonify({"message": "Authorization header missing"}), 401
 
@@ -257,7 +209,6 @@ def profile():
             SECRET_KEY,
             algorithms=["HS256"]
         )
-
         return jsonify({
             "message": "Welcome!",
             "user_id": decoded["user_id"]
