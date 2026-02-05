@@ -1,6 +1,22 @@
 // 🔹 CHANGE THIS TO YOUR RENDER URL
 const API = "https://api-python-myhh.onrender.com";
 //const API = "http://127.0.0.1:5000"
+
+///Redirect to login page if logout hit 
+window.onload = function () {
+    const email = localStorage.getItem("email");
+    if(!email){
+        window.location.href = "/";
+        return;
+    }
+    fetch(`/api/home_page?email=` + email)
+    .then(res => res.json())
+    .then(data => {
+        document.getElementById("user_email").innerText = data.email;
+    });
+
+}
+
 /* =========================
    TAB SWITCH FUNCTION
 ========================= */
@@ -19,6 +35,7 @@ function showTab(tab) {
    REGISTER
 ========================= */
 function register() {
+    const name = document.getElementById("regName").value;
     const email = document.getElementById("regEmail").value;
     const password = document.getElementById("regPassword").value;
     const photo = document.getElementById("regPhoto").files[0];
@@ -26,14 +43,15 @@ function register() {
 
     msg.innerText = "Registering..."; // 👈 immediate feedback
 
-    if (!email || !password) {
-        msg.innerText = "Email and password required";
+    if (!name.trim() || !email.trim() || !password.trim()) {
+        msg.innerText = "Name,Email and password required";
         return;
     }
 
     const formData = new FormData();
     formData.append("email", email);
     formData.append("password", password);
+    formData.append("name",name)
 
     if (photo) {
         formData.append("photo", photo);
@@ -72,6 +90,7 @@ function register() {
    LOGIN
 ========================= */
 function login() {
+    document.getElementById("profileData").innerText=""
     fetch(`${API}/login`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -85,8 +104,8 @@ function login() {
         if (data.token) {
             localStorage.setItem("token", data.token);
             document.getElementById("loginMsg").innerText = "Login successful ✅";
-            showTab("profile");
-            loadProfile();
+            // showTab("profile");
+            //loadProfile();
         } else {
             document.getElementById("loginMsg").innerText = data.message;
         }
@@ -95,6 +114,42 @@ function login() {
         document.getElementById("loginMsg").innerText = "Login failed";
     });
 }
+
+/* =========================
+   LOAE HOME PAGE
+========================= */
+
+function homePage(){
+
+    const email = document.getElementById("loginEmail").value;
+
+    console.log("EMAIL SAVE:", email);
+
+    localStorage.setItem("email", email);
+
+    window.location.href = "/home_page";
+}
+
+
+window.onload = function () {
+
+    const email = localStorage.getItem("email");
+
+    console.log("EMAIL FROM LOCAL:", email);
+
+    fetch(`/api/home_page?email=` + email)
+    .then(res => res.json())
+    .then(data => {
+
+        console.log("API DATA:", data);
+        document.getElementById("user_image").src =data.image
+        document.getElementById("user_name").innerText = data.name;
+
+    });
+
+}
+
+
 
 /* =========================
    LOAD PROFILE
@@ -122,47 +177,28 @@ function loadProfile() {
     });
 }
 
-// ========================
-// Upload Photo
-// ========================
-function uploadProfilePhoto() {
-
-    const fileInput = document.getElementById("photoInput");
-    const message = document.getElementById("uploadMsg");
-  
-    if (fileInput.files.length === 0) {
-      message.innerText = "Please select a photo";
-      return;
-    }
-  
-    const formData = new FormData();
-    formData.append("photo", fileInput.files[0]);
-  
-    // 🔐 Token jo login ke baad mila tha
-    const token = localStorage.getItem("token");
-  
-    if (!token) {
-      message.innerText = "Please login first";
-      return;
-    }
-  
-    fetch(`${API}/upload_photo`, {
-      method: "POST",
-      headers: {
-        "Authorization": "Bearer " + token
-      },
-      body: formData
+/* =========================
+   LOG OUT 
+========================= */
+function logout() {
+    fetch(`${API}/logout`, {
+        method: "POST"
     })
     .then(res => res.json())
     .then(data => {
-      if (data.photoUrl) {
-        message.innerText = "Photo uploaded successfully ✅";
-      } else {
-        message.innerText = data.message || "Upload failed";
-      }
-    })
-    .catch(err => {
-      message.innerText = "Error uploading photo";
-      console.error(err);
+
+        console.log(data);
+
+        // remove saved login info
+        localStorage.removeItem("email");
+        // remove saved tokan 
+        localStorage.removeItem("token");
+
+        // redirect to login page
+        window.location.href = "/";
+
     });
-  }
+
+}
+
+

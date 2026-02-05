@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>User Profile</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: Arial, sans-serif;
+            background: #0f172a;
+            height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .profile-card {
+            background: #020617;
+            width: 350px;
+            padding: 30px;
+            border-radius: 15px;
+            text-align: center;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+        }
+
+        .profile-card img {
+            width: 120px;
+            height: 120px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 4px solid #667eea;
+            margin-bottom: 15px;
+        }
+
+        .welcome {
+            font-size: 22px;
+            font-weight: bold;
+            color: #f9f4f4;
+            margin-bottom: 10px;
+        }
+
+        #user_name {
+            color: white;
+            /* white text */
+            font-size: 18px;
+            font-weight: bold;
+            background: #667eea;
+            /* highlight color */
+            padding: 8px 15px;
+            border-radius: 8px;
+            display: inline-block;
+            margin-top: 10px;
+            margin-bottom: 10px;
+        }
+
+
+        #logout-btn {
+            padding: 5px 12px;
+            /* smaller padding */
+            background: #667eea;
+            color: white;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 13px;
+            /* smaller text */
+        }
+
+
+        #logout-btn:hover {
+            background: #3e52ab;
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="profile-card">
+
+        <img id="user_image" src="" alt="User Photo">
+
+        <div class="welcome">Welcome 👋</div>
+
+        <!-- better use id -->
+        <div id="user_name">loading...</div>
+        <div id="logout-btn">
+            <button id="logout-btn" onclick="logout()">Logout</button>
+        </div>
+    </div>
+
+    <!-- JS FILE -->
+    <script src="/static/script.js"></script>
+
+</body>
+
+</html>

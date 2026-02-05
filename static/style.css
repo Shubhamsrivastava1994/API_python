@@ -5,10 +5,11 @@ body {
 }
 
 .container {
-    width: 350px;
-    margin: 80px auto;
+    width: 90%;
+    max-width: 400px;
+    margin: 120px auto;
     background: #020617;
-    padding: 20px;
+    padding: 30px;
     border-radius: 10px;
     box-shadow: 0 0 20px rgba(0,0,0,0.5);
 }
@@ -25,8 +26,9 @@ h2 {
 }
 
 .tabs button {
-    width: 32%;
+    width: 40%;
     padding: 8px;
+    margin-inline: 7px auto;
     background: #1e293b;
     border: none;
     color: #fff;
@@ -72,3 +74,5 @@ pre {
     padding: 10px;
     border-radius: 5px;
 }
+
+
