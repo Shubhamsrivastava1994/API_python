@@ -15,6 +15,8 @@ from flask_cors import CORS
 import secrets
 import smtplib
 from email.message import EmailMessage
+import threading
+
 
 
 # =========================
@@ -262,7 +264,12 @@ def forgot_password():
     # reset_link = f"http://127.0.0.1:5000/reset_password/{reset_token}"
 
     try:
-      send_reset_email(email, reset_link)
+    #   send_reset_email(email, reset_link)
+        threading.Thread(
+            target=send_reset_email,
+            args=(email, reset_link)
+        ).start()
+
     except Exception as e:
       print("Email sending failed:", str(e))
 
@@ -515,7 +522,12 @@ def reset_password_page():
         }
     )
     # Sending email notfication when password reset successfully
-    password_reset_confirmation_notification(user["email"])
+    # password_reset_confirmation_notification(user["email"])
+    threading.Thread(
+       target=password_reset_confirmation_notification,
+       args=(user["email"],),
+       daemon=True
+    ).start()
     return jsonify({
         "message": "Password reset successful. Please login."
     }), 200
