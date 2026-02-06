@@ -385,89 +385,90 @@ SMTP_PASSWORD = os.getenv("SMTP_PASSWORD")
 
 FROM_EMAIL = os.getenv("FROM_EMAIL")
 
+# ===============================
+# PASSWORD RESET EMAIL
+# ===============================
 
 def send_reset_email(to_email, reset_link):
 
+    print("EMAIL FUNCTION CALLED")
+
     msg = EmailMessage()
-    msg["Subject"] = "Reset Your Password"
+
+    msg["Subject"] = "🔐 Password Reset Request"
     msg["From"] = FROM_EMAIL
     msg["To"] = to_email
 
+    # plain text fallback
+    msg.set_content(f"""
+Hi,
+
+Click below to reset password:
+
+{reset_link}
+
+Link expires in 15 minutes.
+""")
+
+    # HTML email
     msg.add_alternative(f"""
-<div style="font-family: Arial, sans-serif; background:#f4f6f8; padding:20px;">
+    <div style="font-family: Arial; background:#f4f6f8; padding:20px;">
+        <div style="max-width:500px;margin:auto;background:white;padding:25px;border-radius:10px;">
+            <h2 style="color:#007bff;">🔐 Password Reset Request</h2>
 
-    <div style="
-        max-width:520px;
-        margin:auto;
-        background:#ffffff;
-        padding:30px;
-        border-radius:12px;
-        box-shadow:0 4px 12px rgba(0,0,0,0.08);
-    ">
+            <p>Hello 👋,</p>
 
-        <h2 style="color:#007bff; margin-top:0;">
-            🔐 Password Reset Request
-        </h2>
+            <p>We received a request to reset your password.</p>
 
-        <p>Hello 👋,</p>
+            <div style="text-align:center; margin:20px 0;">
+                <a href="{reset_link}"
+                   style="background:#007bff;color:white;padding:12px 20px;text-decoration:none;border-radius:6px;">
+                    Reset Password
+                </a>
+            </div>
 
-        <p>
-            We received a request to reset your password.
-            Click the button below to set a new password.
-        </p>
-
-        <div style="text-align:center; margin:30px 0;">
-            <a href="{reset_link}"
-               style="
-                   display:inline-block;
-                   background:#007bff;
-                   color:#ffffff;
-                   padding:14px 24px;
-                   font-size:16px;
-                   text-decoration:none;
-                   border-radius:8px;
-                   font-weight:bold;
-               ">
-                Reset Password
-            </a>
+            <p style="color:#dc3545;">
+                ⏰ This link will expire in 15 minutes.
+            </p>
         </div>
-
-        <p style="color:#dc3545; font-weight:bold;">
-            ⏰ This link will expire in 15 minutes.
-        </p>
-
-        <div style="
-            background:#f8f9fa;
-            padding:15px;
-            border-radius:8px;
-            margin-top:20px;
-            font-size:14px;
-        ">
-            If you did not request this password reset,
-            you can safely ignore this email.
-        </div>
-
-        <hr style="border:none; border-top:1px solid #eee; margin:25px 0;">
-
-        <p style="color:#888; font-size:12px; text-align:center;">
-            This is an automated message from Auth System.
-        </p>
-
     </div>
-
-</div>
-""", subtype="html")
+    """, subtype="html")
 
     try:
+
+        print("Connecting SMTP...")
+
         with smtplib.SMTP(SMTP_SERVER, SMTP_PORT) as server:
+
+            server.set_debuglevel(1)   # IMPORTANT DEBUG
             server.starttls()
+
+            print("Logging in SMTP...")
             server.login(SMTP_LOGIN, SMTP_PASSWORD)
+
+            print("Sending email...")
             server.send_message(msg)
 
-        print("✅ Email sent successfully")
+        print("✅ EMAIL SENT SUCCESS")
 
     except Exception as e:
-        print("❌ Email error:", e)
+        print("❌ EMAIL ERROR:", e)
+
+
+# ===============================
+# ASYNC THREAD HELPER
+# ===============================
+
+def send_async(func, *args):
+
+    threading.Thread(
+        target=func,
+        args=args,
+        daemon=True
+    ).start()
+
+
+  
 # =============================================================
 # RESET PASSWORD PAGE API TO TAKE NEW PASSWORD AND UPDATE IN DB
 # =============================================================
