@@ -260,8 +260,12 @@ def forgot_password():
     reset_link = f"https://api-python-myhh.onrender.com/reset_password/{reset_token}" 
     # reset_link = f"http://127.0.0.1:5000/reset_password/{reset_token}"
 
-    send_reset_email(email, reset_link)
+    try:
+      send_reset_email(email, reset_link)
+    except Exception as e:
+      print("Email sending failed:", str(e))
 
+    
     return jsonify({
         "message": "Reset password link sent to your email"
     }), 200
