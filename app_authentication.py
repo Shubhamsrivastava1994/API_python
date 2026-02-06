@@ -4,6 +4,7 @@ from flask import Flask, request, jsonify
 from pymongo import MongoClient
 import bcrypt
 import jwt
+import resend
 import os
 import cloudinary
 import cloudinary.uploader
@@ -274,83 +275,160 @@ def forgot_password():
 # EMAIL NOTIFICATION SEND FUNCTION WHEN PASSWORD RESET SUCCESSFULLY 
 def send_reset_email(to_email, reset_link):
 
-    msg = EmailMessage()
-    msg["Subject"] = "🔐 Reset Your Password"
-    msg["From"] = "shubhamsrivastava4971@gmail.com"
-    msg["To"] = to_email
+    resend.Emails.send({
+        "from": "onboarding@resend.dev",
+        "to": to_email,
+        "subject": "🔐 Reset Your Password",
+        "html": f"""
 
-    # ✅ Plain text fallback
-    msg.set_content(f"""
-Hi,
+        <div style="background:#f4f6f8; padding:30px; font-family:Arial, sans-serif;">
 
-Click the link below to reset your password:
+            <div style="
+                max-width:500px;
+                margin:auto;
+                background:white;
+                padding:30px;
+                border-radius:12px;
+                box-shadow:0 0 12px rgba(0,0,0,0.1);
+            ">
 
-{reset_link}
+                <h2 style="color:#4f46e5; text-align:center;">
+                    🔐 Password Reset Request
+                </h2>
 
-This link will expire in 15 minutes.
+                <p style="color:#333;">
+                    Hi there 👋,
+                </p>
 
-If you did not request this, please ignore this email.
+                <p style="color:#555;">
+                    We received a request to reset your password.
+                    Click the button below to create a new password.
+                </p>
 
-Auth System
-""")
+                <div style="text-align:center; margin:30px 0;">
 
-    # ✅ HTML Beautified Email
-    msg.add_alternative(f"""
-    <!DOCTYPE html>
-    <html>
-    <body style="font-family: Arial; background-color:#f4f6f8; padding:20px;">
+                    <a href="{reset_link}"
+                       style="
+                       background:linear-gradient(135deg,#667eea,#4f46e5);
+                       color:white;
+                       padding:14px 24px;
+                       text-decoration:none;
+                       border-radius:8px;
+                       font-weight:bold;
+                       display:inline-block;
+                       ">
+                       Reset Password
+                    </a>
 
-        <div style="max-width:500px; margin:auto; background:white;
-                    padding:25px; border-radius:10px;
-                    box-shadow:0 0 10px rgba(0,0,0,0.1);">
+                </div>
 
-            <h2 style="color:#007bff;">🔐 Password Reset Request</h2>
+                <p style="color:#888;">
+                    ⏰ This link will expire in 15 minutes.
+                </p>
 
-            <p>Hello,</p>
+                <div style="
+                    background:#f8fafc;
+                    padding:15px;
+                    border-radius:8px;
+                    margin-top:20px;
+                    font-size:13px;
+                    color:#666;
+                ">
+                    If you did not request this, please ignore this email.
+                </div>
 
-            <p>We received a request to reset your password.</p>
+                <p style="margin-top:25px; font-size:12px; color:#aaa; text-align:center;">
+                    © Auth System • Secure Account Access
+                </p>
 
-            <p>Click the button below to reset your password:</p>
-
-            <a href="{reset_link}"
-               style="display:inline-block;
-                      background:#007bff;
-                      color:white;
-                      padding:12px 20px;
-                      text-decoration:none;
-                      border-radius:6px;
-                      margin:15px 0;">
-                Reset Password
-            </a>
-
-            <p style="color:#dc3545;">
-                ⏰ This link will expire in 15 minutes.
-            </p>
-
-            <div style="background:#f8f9fa;
-                        padding:15px;
-                        border-radius:8px;
-                        margin-top:15px;">
-                If you did not request this password reset,
-                please ignore this email.
             </div>
-
-            <p style="color:#888; font-size:12px;">
-                This is an automated message. Please do not reply.
-            </p>
 
         </div>
 
-    </body>
-    </html>
-    """, subtype="html")
+        """
+    })
 
-    with smtplib.SMTP_SSL("smtp.gmail.com", 465) as server:
-        server.login(
-              os.getenv("EMAIL_USER"),
-              os.getenv("EMAIL_PASS")
-        )
-        server.send_message(msg)
+
+
+# def send_reset_email(to_email, reset_link):
+
+#     msg = EmailMessage()
+#     msg["Subject"] = "🔐 Reset Your Password"
+#     msg["From"] = "shubhamsrivastava4971@gmail.com"
+#     msg["To"] = to_email
+
+#     # ✅ Plain text fallback
+#     msg.set_content(f"""
+# Hi,
+
+# Click the link below to reset your password:
+
+# {reset_link}
+
+# This link will expire in 15 minutes.
+
+# If you did not request this, please ignore this email.
+
+# Auth System
+# """)
+
+#     # ✅ HTML Beautified Email
+#     msg.add_alternative(f"""
+#     <!DOCTYPE html>
+#     <html>
+#     <body style="font-family: Arial; background-color:#f4f6f8; padding:20px;">
+
+#         <div style="max-width:500px; margin:auto; background:white;
+#                     padding:25px; border-radius:10px;
+#                     box-shadow:0 0 10px rgba(0,0,0,0.1);">
+
+#             <h2 style="color:#007bff;">🔐 Password Reset Request</h2>
+
+#             <p>Hello,</p>
+
+#             <p>We received a request to reset your password.</p>
+
+#             <p>Click the button below to reset your password:</p>
+
+#             <a href="{reset_link}"
+#                style="display:inline-block;
+#                       background:#007bff;
+#                       color:white;
+#                       padding:12px 20px;
+#                       text-decoration:none;
+#                       border-radius:6px;
+#                       margin:15px 0;">
+#                 Reset Password
+#             </a>
+
+#             <p style="color:#dc3545;">
+#                 ⏰ This link will expire in 15 minutes.
+#             </p>
+
+#             <div style="background:#f8f9fa;
+#                         padding:15px;
+#                         border-radius:8px;
+#                         margin-top:15px;">
+#                 If you did not request this password reset,
+#                 please ignore this email.
+#             </div>
+
+#             <p style="color:#888; font-size:12px;">
+#                 This is an automated message. Please do not reply.
+#             </p>
+
+#         </div>
+
+#     </body>
+#     </html>
+#     """, subtype="html")
+
+#     with smtplib.SMTP_SSL("smtp.gmail.com", 465) as server:
+#         server.login(
+#               os.getenv("EMAIL_USER"),
+#               os.getenv("EMAIL_PASS")
+#         )
+#         server.send_message(msg)
 
 
 # =============================================================
@@ -412,69 +490,136 @@ def reset_password_page():
         "message": "Password reset successful. Please login."
     }), 200
 
-from email.message import EmailMessage
-import smtplib
+import resend
+import os
+
+resend.api_key = os.getenv("RESEND_API_KEY")
 
 def password_reset_confirmation_notification(email):
 
-    msg = EmailMessage()
-    msg["Subject"] = "✅ Password Reset Successful"
-    msg["From"] = "shubhamsrivastava4971@gmail.com"
-    msg["To"] = email
+    try:
 
-    # Plain text fallback
-    msg.set_content("""
-Hi,
+        resend.Emails.send({
 
-Your password has been updated successfully.
+            "from": "onboarding@resend.dev",   # 👈 sender email
+            "to": email,
+            "subject": "✅ Password Reset Successful",
 
-If you did not request this, please ignore this email.
+            "html": f"""
 
-Thanks,
-Auth System
-""")
+            <div style="background:#f4f6f8; padding:30px; font-family:Arial, sans-serif;">
 
-    # HTML email (beautified)
-    msg.add_alternative(f"""
-    <!DOCTYPE html>
-    <html>
-    <body style="font-family: Arial; background-color:#f4f6f8; padding:20px;">
+                <div style="
+                    max-width:500px;
+                    margin:auto;
+                    background:white;
+                    padding:25px;
+                    border-radius:12px;
+                    box-shadow:0 0 12px rgba(0,0,0,0.1);
+                ">
 
-        <div style="max-width:500px; margin:auto; background:white;
-                    padding:25px; border-radius:10px;
-                    box-shadow:0 0 10px rgba(0,0,0,0.1);">
+                    <h2 style="color:#28a745; text-align:center;">
+                        ✅ Password Reset Successful
+                    </h2>
 
-            <h2 style="color:#28a745;">✅ Password Reset Successful</h2>
+                    <p>Hello 👋,</p>
 
-            <p>Hello,</p>
+                    <p>
+                        Your password has been 
+                        <b>updated successfully</b>.
+                    </p>
 
-            <p>Your password has been <b>updated successfully</b>.</p>
-
-            <div style="background:#f8f9fa;
+                    <div style="
+                        background:#f8fafc;
                         padding:15px;
                         border-radius:8px;
-                        margin:15px 0;">
-                If you did not request this change,
-                please secure your account immediately.
+                        margin:20px 0;
+                        color:#555;
+                    ">
+                        If you did not request this change,
+                        please secure your account immediately.
+                    </div>
+
+                    <p style="font-size:12px; color:#999; text-align:center;">
+                        This is an automated message. Please do not reply.
+                    </p>
+
+                </div>
+
             </div>
 
-            <p style="color:#888; font-size:12px;">
-                This is an automated message. Please do not reply.
-            </p>
+            """
 
-        </div>
+        })
 
-    </body>
-    </html>
-    """, subtype="html")
+        print("✅ Confirmation email sent")
 
-    with smtplib.SMTP_SSL("smtp.gmail.com", 465) as server:
-        server.login(
-              os.getenv("EMAIL_USER"),
-              os.getenv("EMAIL_PASS")
-        )
-        server.send_message(msg)
+    except Exception as e:
+        print("❌ Email error:", e)
 
+
+
+# def password_reset_confirmation_notification(email):
+
+#     msg = EmailMessage()
+#     msg["Subject"] = "✅ Password Reset Successful"
+#     msg["From"] = "shubhamsrivastava4971@gmail.com"
+#     msg["To"] = email
+
+#     # Plain text fallback
+#     msg.set_content("""
+# Hi,
+
+# Your password has been updated successfully.
+
+# If you did not request this, please ignore this email.
+
+# Thanks,
+# Auth System
+# """)
+
+#     # HTML email (beautified)
+#     msg.add_alternative(f"""
+#     <!DOCTYPE html>
+#     <html>
+#     <body style="font-family: Arial; background-color:#f4f6f8; padding:20px;">
+
+#         <div style="max-width:500px; margin:auto; background:white;
+#                     padding:25px; border-radius:10px;
+#                     box-shadow:0 0 10px rgba(0,0,0,0.1);">
+
+#             <h2 style="color:#28a745;">✅ Password Reset Successful</h2>
+
+#             <p>Hello,</p>
+
+#             <p>Your password has been <b>updated successfully</b>.</p>
+
+#             <div style="background:#f8f9fa;
+#                         padding:15px;
+#                         border-radius:8px;
+#                         margin:15px 0;">
+#                 If you did not request this change,
+#                 please secure your account immediately.
+#             </div>
+
+#             <p style="color:#888; font-size:12px;">
+#                 This is an automated message. Please do not reply.
+#             </p>
+
+#         </div>
+
+#     </body>
+#     </html>
+#     """, subtype="html")
+#     try:
+#       with smtplib.SMTP_SSL("smtp.gmail.com", 465) as server:
+#           server.login(
+#                 os.getenv("EMAIL_USER"),
+#                 os.getenv("EMAIL_PASS")
+#           )
+#           server.send_message(msg)
+#     except Exception as e:
+#        print("Email error:", e)
 
  
 # =========================

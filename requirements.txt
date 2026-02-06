@@ -7,4 +7,5 @@ python-dotenv
 gunicorn
 flask-cors
 cloudinary
+resend
 
