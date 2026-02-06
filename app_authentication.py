@@ -399,7 +399,7 @@ def send_reset_email(to_email, reset_link):
     msg["From"] = FROM_EMAIL
     msg["To"] = to_email
 
-    # plain text fallback
+    # Plain text fallback
     msg.set_content(f"""
 Hi,
 
@@ -410,7 +410,7 @@ Click below to reset password:
 Link expires in 15 minutes.
 """)
 
-    # HTML email
+    # HTML template
     msg.add_alternative(f"""
     <div style="font-family: Arial; background:#f4f6f8; padding:20px;">
         <div style="max-width:500px;margin:auto;background:white;padding:25px;border-radius:10px;">
@@ -438,9 +438,14 @@ Link expires in 15 minutes.
 
         print("Connecting SMTP...")
 
-        with smtplib.SMTP(SMTP_SERVER, SMTP_PORT) as server:
+        # 🔥 timeout added (VERY IMPORTANT)
+        with smtplib.SMTP(SMTP_SERVER, SMTP_PORT, timeout=10) as server:
 
-            server.set_debuglevel(1)   # IMPORTANT DEBUG
+            print("Connected SMTP")
+
+            server.set_debuglevel(1)
+
+            print("Starting TLS...")
             server.starttls()
 
             print("Logging in SMTP...")
@@ -453,6 +458,7 @@ Link expires in 15 minutes.
 
     except Exception as e:
         print("❌ EMAIL ERROR:", e)
+
 
 
 # ===============================
