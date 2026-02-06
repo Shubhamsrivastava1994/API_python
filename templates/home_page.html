@@ -4,14 +4,14 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
     <title>User Profile</title>
+
     <style>
         body {
             margin: 0;
             padding: 0;
             font-family: Arial, sans-serif;
-            background: #0f172a;
+            background: linear-gradient(135deg, #0f172a, #1e293b);
             height: 100vh;
             display: flex;
             align-items: center;
@@ -20,11 +20,12 @@
 
         .profile-card {
             background: #020617;
-            width: 350px;
-            padding: 30px;
+            width: 360px;
+            padding: 35px 25px;
             border-radius: 15px;
             text-align: center;
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+            box-shadow: 0 15px 40px rgba(0, 0, 0, 0.4);
+            border: 1px solid rgba(255, 255, 255, 0.05);
         }
 
         .profile-card img {
@@ -32,47 +33,43 @@
             height: 120px;
             border-radius: 50%;
             object-fit: cover;
-            border: 4px solid #667eea;
+            border: 3px solid #667eea;
             margin-bottom: 15px;
         }
 
         .welcome {
             font-size: 22px;
             font-weight: bold;
-            color: #f9f4f4;
+            color: #ffffff;
             margin-bottom: 10px;
         }
 
         #user_name {
             color: white;
-            /* white text */
             font-size: 18px;
             font-weight: bold;
             background: #667eea;
-            /* highlight color */
             padding: 8px 15px;
             border-radius: 8px;
             display: inline-block;
             margin-top: 10px;
-            margin-bottom: 10px;
+            margin-bottom: 20px;
         }
-
 
         #logout-btn {
-            padding: 5px 12px;
-            /* smaller padding */
-            background: #667eea;
+            padding: 10px 18px;
+            background: linear-gradient(135deg, #667eea, #4f46e5);
             color: white;
             border: none;
-            border-radius: 6px;
+            border-radius: 8px;
             cursor: pointer;
-            font-size: 13px;
-            /* smaller text */
+            font-size: 14px;
+            transition: 0.3s;
         }
 
-
         #logout-btn:hover {
-            background: #3e52ab;
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
         }
     </style>
 </head>
@@ -81,15 +78,15 @@
 
     <div class="profile-card">
 
-        <img id="user_image" src="" alt="User Photo">
+        <img id="user_image"
+            src="https://res.cloudinary.com/dls79lzyn/image/upload/v1770363924/default_user_profile_bx8coo.jpg"
+            alt="User Photo">
 
-        <div class="welcome">Welcome 👋</div>
+        <div class="welcome">Welcome Back 👋</div>
 
-        <!-- better use id -->
         <div id="user_name">loading...</div>
-        <div id="logout-btn">
-            <button id="logout-btn" onclick="logout()">Logout</button>
-        </div>
+        <br>
+        <button id="logout-btn" onclick="logout()">Logout</button>
     </div>
 
     <!-- JS FILE -->

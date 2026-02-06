@@ -26,9 +26,9 @@ h2 {
 }
 
 .tabs button {
-    width: 40%;
-    padding: 8px;
-    margin-inline: 7px auto;
+    width: 70%;
+    padding: 10px;
+    margin-inline: 10px auto;
     background: #1e293b;
     border: none;
     color: #fff;
@@ -37,7 +37,7 @@ h2 {
 }
 
 .tabs button:hover {
-    background: #334155;
+    background: #506481;
 }
 
 .card {

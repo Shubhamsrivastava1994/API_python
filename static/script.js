@@ -1,6 +1,6 @@
 // 🔹 CHANGE THIS TO YOUR RENDER URL
-const API = "https://api-python-myhh.onrender.com";
-//const API = "http://127.0.0.1:5000"
+//const API = "https://api-python-myhh.onrender.com";
+const API = "http://127.0.0.1:5000"
 
 ///Redirect to login page if logout hit 
 window.onload = function () {
@@ -36,18 +36,21 @@ function showTab(tab) {
 ========================= */
 function register() {
     const name = document.getElementById("regName").value;
-    const email = document.getElementById("regEmail").value;
+    const email = document.getElementById("regEmail").value.trim().toLowerCase();
     const password = document.getElementById("regPassword").value;
     const photo = document.getElementById("regPhoto").files[0];
     const msg = document.getElementById("regMsg");
-
+    const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     msg.innerText = "Registering..."; // 👈 immediate feedback
-
+    if (!emailPattern.test(email)) {
+        msg.innerText = "Please enter valid email format";
+        return;
+    }
     if (!name.trim() || !email.trim() || !password.trim()) {
         msg.innerText = "Name,Email and password required";
         return;
     }
-
+   
     const formData = new FormData();
     formData.append("email", email);
     formData.append("password", password);
@@ -95,7 +98,7 @@ function login() {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
-            email: document.getElementById("loginEmail").value,
+            email: document.getElementById("loginEmail").value.trim().toLowerCase(),
             password: document.getElementById("loginPassword").value
         })
     })
@@ -106,6 +109,7 @@ function login() {
             document.getElementById("loginMsg").innerText = "Login successful ✅";
             // showTab("profile");
             //loadProfile();
+            homePage()
         } else {
             document.getElementById("loginMsg").innerText = data.message;
         }
@@ -142,8 +146,13 @@ window.onload = function () {
     .then(data => {
 
         console.log("API DATA:", data);
-        document.getElementById("user_image").src =data.image
-        document.getElementById("user_name").innerText = data.name;
+        if(data.image == null){
+            document.getElementById("user_image").src ="https://res.cloudinary.com/dls79lzyn/image/upload/v1770363924/default_user_profile_bx8coo.jpg"
+        }else{
+            document.getElementById("user_image").src =data.image
+        }
+        
+        document.getElementById("user_name").innerText = data.name||"Please Login";
 
     });
 
@@ -154,28 +163,28 @@ window.onload = function () {
 /* =========================
    LOAD PROFILE
 ========================= */
-function loadProfile() {
-    const token = localStorage.getItem("token");
+// function loadProfile() {
+//     const token = localStorage.getItem("token");
 
-    if (!token) {
-        document.getElementById("profileData").innerText = "Not logged in";
-        return;
-    }
+//     if (!token) {
+//         document.getElementById("profileData").innerText = "Not logged in";
+//         return;
+//     }
 
-    fetch(`${API}/profile`, {
-        headers: {
-            "Authorization": "Bearer " + token
-        }
-    })
-    .then(res => res.json())
-    .then(data => {
-        document.getElementById("profileData").innerText =
-            JSON.stringify(data, null, 2);
-    })
-    .catch(() => {
-        document.getElementById("profileData").innerText = "Failed to load profile";
-    });
-}
+//     fetch(`${API}/profile`, {
+//         headers: {
+//             "Authorization": "Bearer " + token
+//         }
+//     })
+//     .then(res => res.json())
+//     .then(data => {
+//         document.getElementById("profileData").innerText =
+//             JSON.stringify(data, null, 2);
+//     })
+//     .catch(() => {
+//         document.getElementById("profileData").innerText = "Failed to load profile";
+//     });
+// }
 
 /* =========================
    LOG OUT 
@@ -201,4 +210,62 @@ function logout() {
 
 }
 
+// ====FORGET PASSWORD CODE=====//
+function forgotPassword() {
 
+    const email = document.getElementById("forgotEmail").value;
+    const forgetEmailmsg  = document.getElementById("forgotMsg")
+    const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailPattern.test(email)) {
+        forgetEmailmsg.innerText = "Please enter valid email format";
+        return;
+    }
+    fetch(`${API}/forgot_password`, {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json"
+        },
+        body: JSON.stringify({ email: email })
+    })
+    .then(res => res.json())
+    .then(data => {
+        document.getElementById("forgotMsg").innerText = data.message;
+    })
+    .catch(err => {
+        console.log(err);
+    });
+}
+// ======RESET PAGE CODE 
+
+function resetPassword(){
+
+    const token = document.getElementById("token").value;
+    const password = document.getElementById("newPassword").value;
+    const confirm = document.getElementById("confirmPassword").value;
+    const msg = document.getElementById("resetMsg");
+
+    if(!password || !confirm){
+        msg.innerText = "All fields required";
+        return;
+    }
+
+    if(password !== confirm){
+        msg.innerText = "Passwords do not match";
+        return;
+    }
+
+    fetch(`${API}/reset_password_page`, {
+        method:"POST",
+        headers:{
+            "Content-Type":"application/json"
+        },
+        body: JSON.stringify({
+            token: token,
+            password: password
+        })
+    })
+    .then(res=>res.json())
+    .then(data=>{
+        msg.innerText = data.message;
+    })
+}
