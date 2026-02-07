@@ -5,15 +5,15 @@ const API = "https://api-python-myhh.onrender.com";
 ///Redirect to login page if logout hit 
 window.onload = function () {
     const email = localStorage.getItem("email");
-    if(!email){
+    if (!email) {
         window.location.href = "/";
         return;
     }
     fetch(`/api/home_page?email=` + email)
-    .then(res => res.json())
-    .then(data => {
-        document.getElementById("user_email").innerText = data.email;
-    });
+        .then(res => res.json())
+        .then(data => {
+            document.getElementById("user_email").innerText = data.email;
+        });
 
 }
 
@@ -50,11 +50,11 @@ function register() {
         msg.innerText = "Name,Email and password required";
         return;
     }
-   
+
     const formData = new FormData();
     formData.append("email", email);
     formData.append("password", password);
-    formData.append("name",name)
+    formData.append("name", name)
 
     if (photo) {
         formData.append("photo", photo);
@@ -64,27 +64,27 @@ function register() {
         method: "POST",
         body: formData
     })
-    .then(res => res.json())
-    .then(data => {
-        console.log("REGISTER RESPONSE:", data); // 👈 debug
+        .then(res => res.json())
+        .then(data => {
+            console.log("REGISTER RESPONSE:", data); // 👈 debug
 
-        if (data.message) {
-            msg.innerText = data.message;
-        } else {
-            msg.innerText = "Registered successfully";
-        }
+            if (data.message) {
+                msg.innerText = data.message;
+            } else {
+                msg.innerText = "Registered successfully";
+            }
 
-        // 👇 thoda delay taaki user message dekh le
-        if (data.message === "User registered successfully") {
-            setTimeout(() => {
-                showTab("login");
-            }, 1500);
-        }
-    })
-    .catch(err => {
-        console.error(err);
-        msg.innerText = "Registration failed";
-    });
+            // 👇 thoda delay taaki user message dekh le
+            if (data.message === "User registered successfully") {
+                setTimeout(() => {
+                    showTab("login");
+                }, 1500);
+            }
+        })
+        .catch(err => {
+            console.error(err);
+            msg.innerText = "Registration failed";
+        });
 }
 
 
@@ -93,7 +93,7 @@ function register() {
    LOGIN
 ========================= */
 function login() {
-    document.getElementById("profileData").innerText=""
+    document.getElementById("profileData").innerText = ""
     fetch(`${API}/login`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -102,28 +102,28 @@ function login() {
             password: document.getElementById("loginPassword").value
         })
     })
-    .then(res => res.json())
-    .then(data => {
-        if (data.token) {
-            localStorage.setItem("token", data.token);
-            document.getElementById("loginMsg").innerText = "Login successful ✅";
-            // showTab("profile");
-            //loadProfile();
-            homePage()
-        } else {
-            document.getElementById("loginMsg").innerText = data.message;
-        }
-    })
-    .catch(() => {
-        document.getElementById("loginMsg").innerText = "Login failed";
-    });
+        .then(res => res.json())
+        .then(data => {
+            if (data.token) {
+                localStorage.setItem("token", data.token);
+                document.getElementById("loginMsg").innerText = "Login successful ✅";
+                // showTab("profile");
+                //loadProfile();
+                homePage()
+            } else {
+                document.getElementById("loginMsg").innerText = data.message;
+            }
+        })
+        .catch(() => {
+            document.getElementById("loginMsg").innerText = "Login failed";
+        });
 }
 
 /* =========================
    LOAE HOME PAGE
 ========================= */
 
-function homePage(){
+function homePage() {
 
     const email = document.getElementById("loginEmail").value;
 
@@ -142,19 +142,19 @@ window.onload = function () {
     console.log("EMAIL FROM LOCAL:", email);
 
     fetch(`/api/home_page?email=` + email)
-    .then(res => res.json())
-    .then(data => {
+        .then(res => res.json())
+        .then(data => {
 
-        console.log("API DATA:", data);
-        if(data.image == null){
-            document.getElementById("user_image").src ="https://res.cloudinary.com/dls79lzyn/image/upload/v1770363924/default_user_profile_bx8coo.jpg"
-        }else{
-            document.getElementById("user_image").src =data.image
-        }
-        
-        document.getElementById("user_name").innerText = data.name||"Please Login";
+            console.log("API DATA:", data);
+            if (data.image == null) {
+                document.getElementById("user_image").src = "https://res.cloudinary.com/dls79lzyn/image/upload/v1770363924/default_user_profile_bx8coo.jpg"
+            } else {
+                document.getElementById("user_image").src = data.image
+            }
 
-    });
+            document.getElementById("user_name").innerText = data.name || "Please Login";
+
+        });
 
 }
 
@@ -193,20 +193,20 @@ function logout() {
     fetch(`${API}/logout`, {
         method: "POST"
     })
-    .then(res => res.json())
-    .then(data => {
+        .then(res => res.json())
+        .then(data => {
 
-        console.log(data);
+            console.log(data);
 
-        // remove saved login info
-        localStorage.removeItem("email");
-        // remove saved tokan 
-        localStorage.removeItem("token");
+            // remove saved login info
+            localStorage.removeItem("email");
+            // remove saved tokan 
+            localStorage.removeItem("token");
 
-        // redirect to login page
-        window.location.href = "/";
+            // redirect to login page
+            window.location.href = "/";
 
-    });
+        });
 
 }
 
@@ -214,7 +214,7 @@ function logout() {
 function forgotPassword() {
 
     const email = document.getElementById("forgotEmail").value;
-    const forgetEmailmsg  = document.getElementById("forgotMsg")
+    const forgetEmailmsg = document.getElementById("forgotMsg")
     const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     if (!emailPattern.test(email)) {
         forgetEmailmsg.innerText = "Please enter valid email format";
@@ -227,47 +227,49 @@ function forgotPassword() {
         },
         body: JSON.stringify({ email: email })
     })
-    .then(res => res.json())
-    .then(data => {
-        document.getElementById("forgotMsg").innerText = data.message;
-        document.getElementById("resetLink").href  = data.reset_link;
-        document.getElementById("resetLink").style.display = "inline-block";
-    })
-    .catch(err => {
-        console.log(err);
-    });
+        .then(res => res.json())
+        .then(data => {
+            document.getElementById("forgotMsg").innerText = data.message;
+            if (data.reset_link) {
+                document.getElementById("resetLink").href = data.reset_link;
+                document.getElementById("resetLink").style.display = "inline-block";
+            }
+        })
+        .catch(err => {
+            console.log(err);
+        });
 }
 // ======RESET PAGE CODE 
 
-function resetPassword(){
+function resetPassword() {
 
     const token = document.getElementById("token").value;
     const password = document.getElementById("newPassword").value;
     const confirm = document.getElementById("confirmPassword").value;
     const msg = document.getElementById("resetMsg");
 
-    if(!password || !confirm){
+    if (!password || !confirm) {
         msg.innerText = "All fields required";
         return;
     }
 
-    if(password !== confirm){
+    if (password !== confirm) {
         msg.innerText = "Passwords do not match";
         return;
     }
 
     fetch(`${API}/reset_password_page`, {
-        method:"POST",
-        headers:{
-            "Content-Type":"application/json"
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json"
         },
         body: JSON.stringify({
             token: token,
             password: password
         })
     })
-    .then(res=>res.json())
-    .then(data=>{
-        msg.innerText = data.message;
-    })
+        .then(res => res.json())
+        .then(data => {
+            msg.innerText = data.message;
+        })
 }
