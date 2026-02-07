@@ -15,7 +15,7 @@ from flask_cors import CORS
 import secrets
 import smtplib
 from email.message import EmailMessage
-import threading
+
 
 
 
@@ -264,12 +264,7 @@ def forgot_password():
     # reset_link = f"http://127.0.0.1:5000/reset_password/{reset_token}"
 
     try:
-    #   send_reset_email(email, reset_link)
-        threading.Thread(
-            target=send_reset_email,
-            args=(email, reset_link)
-        ).start()
-
+       send_reset_email(email, reset_link)
     except Exception as e:
       print("Email sending failed:", str(e))
 
@@ -281,139 +276,42 @@ def forgot_password():
 
 # EMAIL NOTIFICATION SEND FUNCTION WHEN PASSWORD RESET SUCCESSFULLY 
 
-# def send_reset_email(to_email, reset_link):
-
-#     msg = EmailMessage()
-
-#     msg["Subject"] = "🔐 Reset Your Password"
-#     msg["From"] = os.getenv("EMAIL_USER")   # ENV variable
-#     msg["To"] = to_email
-
-#     # Plain text fallback
-#     msg.set_content(f"""
-# Hi,
-
-# Click the link below to reset your password:
-
-# {reset_link}
-
-# This link will expire in 15 minutes.
-
-# If you did not request this, please ignore this email.
-
-# Auth System
-# """)
-
-#     # HTML email
-#     msg.add_alternative(f"""
-#     <div style="font-family: Arial; background:#f4f6f8; padding:20px;">
-
-#         <div style="
-#             max-width:500px;
-#             margin:auto;
-#             background:white;
-#             padding:25px;
-#             border-radius:10px;
-#             box-shadow:0 0 10px rgba(0,0,0,0.1);
-#         ">
-
-#             <h2 style="color:#007bff;">🔐 Password Reset Request</h2>
-
-#             <p>Hello 👋,</p>
-
-#             <p>We received a request to reset your password.</p>
-
-#             <div style="text-align:center; margin:20px 0;">
-#                 <a href="{reset_link}"
-#                    style="
-#                        display:inline-block;
-#                        background:#007bff;
-#                        color:white;
-#                        padding:12px 20px;
-#                        text-decoration:none;
-#                        border-radius:6px;">
-#                     Reset Password
-#                 </a>
-#             </div>
-
-#             <p style="color:#dc3545;">
-#                 ⏰ This link will expire in 15 minutes.
-#             </p>
-
-#             <div style="
-#                 background:#f8f9fa;
-#                 padding:15px;
-#                 border-radius:8px;
-#                 margin-top:15px;">
-#                 If you did not request this password reset,
-#                 please ignore this email.
-#             </div>
-
-#             <p style="color:#888; font-size:12px;">
-#                 This is an automated message. Please do not reply.
-#             </p>
-
-#         </div>
-
-#     </div>
-#     """, subtype="html")
-
-#     try:
-
-#         # ✅ TLS SMTP (Render compatible)
-#         server = smtplib.SMTP("smtp.gmail.com", 587)
-#         server.starttls()
-
-#         server.login(
-#             os.getenv("EMAIL_USER"),
-#             os.getenv("EMAIL_PASS")
-#         )
-
-#         server.send_message(msg)
-#         server.quit()
-
-#         print("✅ Reset email sent")
-
-#     except Exception as e:
-#         print("❌ Email error:", e)
-
-SMTP_SERVER = os.getenv("SMTP_SERVER")
-SMTP_PORT = 587
-
-SMTP_LOGIN = os.getenv("SMTP_LOGIN")
-SMTP_PASSWORD = os.getenv("SMTP_PASSWORD")
-
-FROM_EMAIL = os.getenv("FROM_EMAIL")
-
-# ===============================
-# PASSWORD RESET EMAIL
-# ===============================
-
 def send_reset_email(to_email, reset_link):
-
-    print("EMAIL FUNCTION CALLED")
 
     msg = EmailMessage()
 
-    msg["Subject"] = "🔐 Password Reset Request"
-    msg["From"] = FROM_EMAIL
+    msg["Subject"] = "🔐 Reset Your Password"
+    msg["From"] = os.getenv("EMAIL_USER")   # ENV variable
     msg["To"] = to_email
 
     # Plain text fallback
     msg.set_content(f"""
 Hi,
 
-Click below to reset password:
+Click the link below to reset your password:
 
 {reset_link}
 
-Link expires in 15 minutes.
+This link will expire in 15 minutes.
+
+If you did not request this, please ignore this email.
+
+Auth System
 """)
 
-    # HTML template
+    # HTML email
     msg.add_alternative(f"""
     <div style="font-family: Arial; background:#f4f6f8; padding:20px;">
-        <div style="max-width:500px;margin:auto;background:white;padding:25px;border-radius:10px;">
+
+        <div style="
+            max-width:500px;
+            margin:auto;
+            background:white;
+            padding:25px;
+            border-radius:10px;
+            box-shadow:0 0 10px rgba(0,0,0,0.1);
+        ">
+
             <h2 style="color:#007bff;">🔐 Password Reset Request</h2>
 
             <p>Hello 👋,</p>
@@ -422,7 +320,13 @@ Link expires in 15 minutes.
 
             <div style="text-align:center; margin:20px 0;">
                 <a href="{reset_link}"
-                   style="background:#007bff;color:white;padding:12px 20px;text-decoration:none;border-radius:6px;">
+                   style="
+                       display:inline-block;
+                       background:#007bff;
+                       color:white;
+                       padding:12px 20px;
+                       text-decoration:none;
+                       border-radius:6px;">
                     Reset Password
                 </a>
             </div>
@@ -430,51 +334,45 @@ Link expires in 15 minutes.
             <p style="color:#dc3545;">
                 ⏰ This link will expire in 15 minutes.
             </p>
+
+            <div style="
+                background:#f8f9fa;
+                padding:15px;
+                border-radius:8px;
+                margin-top:15px;">
+                If you did not request this password reset,
+                please ignore this email.
+            </div>
+
+            <p style="color:#888; font-size:12px;">
+                This is an automated message. Please do not reply.
+            </p>
+
         </div>
+
     </div>
     """, subtype="html")
 
     try:
 
-        print("Connecting SMTP...")
+        # ✅ TLS SMTP (Render compatible)
+        server = smtplib.SMTP("smtp.gmail.com", 587)
+        server.starttls()
 
-        # 🔥 timeout added (VERY IMPORTANT)
-        with smtplib.SMTP(SMTP_SERVER, SMTP_PORT, timeout=10) as server:
+        server.login(
+            os.getenv("EMAIL_USER"),
+            os.getenv("EMAIL_PASS")
+        )
 
-            print("Connected SMTP")
+        server.send_message(msg)
+        server.quit()
 
-            server.set_debuglevel(1)
-
-            print("Starting TLS...")
-            server.starttls()
-
-            print("Logging in SMTP...")
-            server.login(SMTP_LOGIN, SMTP_PASSWORD)
-
-            print("Sending email...")
-            server.send_message(msg)
-
-        print("✅ EMAIL SENT SUCCESS")
+        print("✅ Reset email sent")
 
     except Exception as e:
-        print("❌ EMAIL ERROR:", e)
+        print("❌ Email error:", e)
 
 
-
-# ===============================
-# ASYNC THREAD HELPER
-# ===============================
-
-def send_async(func, *args):
-
-    threading.Thread(
-        target=func,
-        args=args,
-        daemon=True
-    ).start()
-
-
-  
 # =============================================================
 # RESET PASSWORD PAGE API TO TAKE NEW PASSWORD AND UPDATE IN DB
 # =============================================================
@@ -529,99 +427,18 @@ def reset_password_page():
         }
     )
     # Sending email notfication when password reset successfully
-    # password_reset_confirmation_notification(user["email"])
-    threading.Thread(
-       target=password_reset_confirmation_notification,
-       args=(user["email"],),
-       daemon=True
-    ).start()
+    password_reset_confirmation_notification(user["email"])
     return jsonify({
         "message": "Password reset successful. Please login."
     }), 200
 
-
-# def password_reset_confirmation_notification(email):
-
-#     msg = EmailMessage()
-
-#     msg["Subject"] = "✅ Password Reset Successful"
-#     msg["From"] = os.getenv("EMAIL_USER")   # ENV variable
-#     msg["To"] = email
-
-#     # Plain text fallback
-#     msg.set_content("""
-# Hi,
-
-# Your password has been updated successfully.
-
-# If you did not request this, please ignore this email.
-
-# Thanks,
-# Auth System
-# """)
-
-#     # HTML email
-#     msg.add_alternative(f"""
-#     <div style="font-family: Arial; background:#f4f6f8; padding:20px;">
-
-#         <div style="
-#             max-width:500px;
-#             margin:auto;
-#             background:white;
-#             padding:25px;
-#             border-radius:10px;
-#             box-shadow:0 0 10px rgba(0,0,0,0.1);
-#         ">
-
-#             <h2 style="color:#28a745;">✅ Password Reset Successful</h2>
-
-#             <p>Hello 👋,</p>
-
-#             <p>Your password has been <b>updated successfully</b>.</p>
-
-#             <div style="
-#                 background:#f8f9fa;
-#                 padding:15px;
-#                 border-radius:8px;
-#                 margin:15px 0;">
-#                 If you did not request this change,
-#                 please secure your account immediately.
-#             </div>
-
-#             <p style="color:#888; font-size:12px;">
-#                 This is an automated message. Please do not reply.
-#             </p>
-
-#         </div>
-
-#     </div>
-#     """, subtype="html")
-
-#     try:
-
-#         # ✅ SMTP TLS version (Render friendly)
-#         server = smtplib.SMTP("smtp.gmail.com", 587)
-#         server.starttls()
-
-#         server.login(
-#             os.getenv("EMAIL_USER"),
-#             os.getenv("EMAIL_PASS")
-#         )
-
-#         server.send_message(msg)
-#         server.quit()
-
-#         print("✅ Confirmation email sent")
-
-#     except Exception as e:
-#         print("❌ Email error:", e)
 
 def password_reset_confirmation_notification(email):
 
     msg = EmailMessage()
 
     msg["Subject"] = "✅ Password Reset Successful"
-    msg["From"] = FROM_EMAIL
+    msg["From"] = os.getenv("EMAIL_USER")   # ENV variable
     msg["To"] = email
 
     # Plain text fallback
@@ -639,6 +456,7 @@ Auth System
     # HTML email
     msg.add_alternative(f"""
     <div style="font-family: Arial; background:#f4f6f8; padding:20px;">
+
         <div style="
             max-width:500px;
             margin:auto;
@@ -668,20 +486,31 @@ Auth System
             </p>
 
         </div>
+
     </div>
     """, subtype="html")
 
     try:
 
-        with smtplib.SMTP(SMTP_SERVER, SMTP_PORT) as server:
-            server.starttls()
-            server.login(SMTP_LOGIN, SMTP_PASSWORD)
-            server.send_message(msg)
+        # ✅ SMTP TLS version (Render friendly)
+        server = smtplib.SMTP("smtp.gmail.com", 587)
+        server.starttls()
+
+        server.login(
+            os.getenv("EMAIL_USER"),
+            os.getenv("EMAIL_PASS")
+        )
+
+        server.send_message(msg)
+        server.quit()
 
         print("✅ Confirmation email sent")
 
     except Exception as e:
         print("❌ Email error:", e)
+
+    
+
 # =========================
 # 🔹 PROTECTED API JWT ENCODING 
 # =========================
