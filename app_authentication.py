@@ -263,14 +263,15 @@ def forgot_password():
     reset_link = f"https://api-python-myhh.onrender.com/reset_password/{reset_token}" 
     # reset_link = f"http://127.0.0.1:5000/reset_password/{reset_token}"
 
-    try:
-       send_reset_email(email, reset_link)
-    except Exception as e:
-      print("Email sending failed:", str(e))
+    # try:
+    #    send_reset_email(email, reset_link)
+    # except Exception as e:
+    #   print("Email sending failed:", str(e))
 
     
     return jsonify({
-        "message": "Reset password link sent to your email"
+        "message": "Reset password link sent to your email",
+        "reset_link":reset_link
     }), 200
 
 
@@ -427,7 +428,7 @@ def reset_password_page():
         }
     )
     # Sending email notfication when password reset successfully
-    password_reset_confirmation_notification(user["email"])
+    # password_reset_confirmation_notification(user["email"])
     return jsonify({
         "message": "Password reset successful. Please login."
     }), 200

@@ -1,6 +1,6 @@
 // 🔹 CHANGE THIS TO YOUR RENDER URL
 const API = "https://api-python-myhh.onrender.com";
- //const API = "http://127.0.0.1:5000"
+//const API = "http://127.0.0.1:5000"
 
 ///Redirect to login page if logout hit 
 window.onload = function () {
@@ -230,6 +230,8 @@ function forgotPassword() {
     .then(res => res.json())
     .then(data => {
         document.getElementById("forgotMsg").innerText = data.message;
+        document.getElementById("resetLink").href  = data.reset_link;
+        document.getElementById("resetLink").style.display = "inline-block";
     })
     .catch(err => {
         console.log(err);

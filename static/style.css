@@ -75,4 +75,29 @@ pre {
     border-radius: 5px;
 }
 
+.reset-btn {
+    display: none;          /* initially hidden */
+    margin: 20px auto;
+    width: fit-content;
+
+    background-color: #007bff;
+    color: white;
+
+    padding: 12px 20px;
+    border-radius: 8px;
+
+    text-decoration: none;
+    font-weight: 600;
+    font-size: 15px;
+
+    cursor: pointer;
+    transition: 0.3s ease;
+}
+
+.reset-btn:hover {
+    background-color: #0056b3;
+    transform: translateY(-2px);
+}
+
+
 
