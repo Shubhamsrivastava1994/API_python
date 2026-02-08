@@ -291,10 +291,10 @@ def forgot_password():
     reset_link = f"https://api-python-myhh.onrender.com/reset_password/{reset_token}" 
     # reset_link = f"http://127.0.0.1:5000/reset_password/{reset_token}"
 
-    # try:
-    #    send_reset_email(email, reset_link)
-    # except Exception as e:
-    #   print("Email sending failed:", str(e))
+    try:
+       send_reset_email(email, reset_link)
+    except Exception as e:
+      print("Email sending failed:", str(e))
 
     
     return jsonify({
@@ -305,102 +305,92 @@ def forgot_password():
 
 # EMAIL NOTIFICATION SEND FUNCTION WHEN PASSWORD RESET SUCCESSFULLY 
 
+# 
+# EMAIL NOTIFICATION SEND FUNCTION WHEN PASSWORD RESET SUCCESSFULLY 
+import resend
+import os
+
+# ✅ API KEY (Railway ENV se uthao)
+resend.api_key = os.getenv("RESEND_API_KEY")
+
+
 def send_reset_email(to_email, reset_link):
-
-    msg = EmailMessage()
-
-    msg["Subject"] = "🔐 Reset Your Password"
-    msg["From"] = os.getenv("EMAIL_USER")   # ENV variable
-    msg["To"] = to_email
-
-    # Plain text fallback
-    msg.set_content(f"""
-Hi,
-
-Click the link below to reset your password:
-
-{reset_link}
-
-This link will expire in 15 minutes.
-
-If you did not request this, please ignore this email.
-
-Auth System
-""")
-
-    # HTML email
-    msg.add_alternative(f"""
-    <div style="font-family: Arial; background:#f4f6f8; padding:20px;">
-
-        <div style="
-            max-width:500px;
-            margin:auto;
-            background:white;
-            padding:25px;
-            border-radius:10px;
-            box-shadow:0 0 10px rgba(0,0,0,0.1);
-        ">
-
-            <h2 style="color:#007bff;">🔐 Password Reset Request</h2>
-
-            <p>Hello 👋,</p>
-
-            <p>We received a request to reset your password.</p>
-
-            <div style="text-align:center; margin:20px 0;">
-                <a href="{reset_link}"
-                   style="
-                       display:inline-block;
-                       background:#007bff;
-                       color:white;
-                       padding:12px 20px;
-                       text-decoration:none;
-                       border-radius:6px;">
-                    Reset Password
-                </a>
-            </div>
-
-            <p style="color:#dc3545;">
-                ⏰ This link will expire in 15 minutes.
-            </p>
-
-            <div style="
-                background:#f8f9fa;
-                padding:15px;
-                border-radius:8px;
-                margin-top:15px;">
-                If you did not request this password reset,
-                please ignore this email.
-            </div>
-
-            <p style="color:#888; font-size:12px;">
-                This is an automated message. Please do not reply.
-            </p>
-
-        </div>
-
-    </div>
-    """, subtype="html")
 
     try:
 
-        # ✅ TLS SMTP (Render compatible)
-        server = smtplib.SMTP("smtp.gmail.com", 587)
-        server.starttls()
+        response = resend.Emails.send({
 
-        server.login(
-            os.getenv("EMAIL_USER"),
-            os.getenv("EMAIL_PASS")
-        )
+            # ⚠️ Free plan me onboarding email allowed
+            "from": 'noreply@shubham4971.online',
 
-        server.send_message(msg)
-        server.quit()
+            # ⚠️ LIST me hona zaroori hai
+            "to": [to_email],
 
-        print("✅ Reset email sent")
+            "subject": "🔐 Reset Your Password",
+
+            "html": f"""
+            <div style="background:#f4f6f8; padding:30px; font-family:Arial, sans-serif;">
+                <div style="
+                    max-width:500px;
+                    margin:auto;
+                    background:white;
+                    padding:30px;
+                    border-radius:12px;
+                    box-shadow:0 0 12px rgba(0,0,0,0.1);
+                ">
+
+                    <h2 style="color:#4f46e5; text-align:center;">
+                        🔐 Password Reset Request
+                    </h2>
+
+                    <p style="color:#333;">Hi there 👋,</p>
+
+                    <p style="color:#555;">
+                        We received a request to reset your password.
+                        Click the button below to create a new password.
+                    </p>
+
+                    <div style="text-align:center; margin:30px 0;">
+                        <a href="{reset_link}"
+                           style="
+                           background:linear-gradient(135deg,#667eea,#4f46e5);
+                           color:white;
+                           padding:14px 24px;
+                           text-decoration:none;
+                           border-radius:8px;
+                           font-weight:bold;
+                           display:inline-block;">
+                           Reset Password
+                        </a>
+                    </div>
+
+                    <p style="color:#888;">⏰ This link will expire in 15 minutes.</p>
+
+                    <div style="
+                        background:#f8fafc;
+                        padding:15px;
+                        border-radius:8px;
+                        margin-top:20px;
+                        font-size:13px;
+                        color:#666;">
+                        If you did not request this, please ignore this email.
+                    </div>
+
+                    <p style="margin-top:25px; font-size:12px; color:#aaa; text-align:center;">
+                        © Auth System • Secure Account Access
+                    </p>
+
+                </div>
+            </div>
+            """
+        })
+
+        print("✅ Email sent:", response)
+        return True
 
     except Exception as e:
-        print("❌ Email error:", e)
-
+        print("❌ Email sending failed:", str(e))
+        return False
 
 # =============================================================
 # RESET PASSWORD PAGE API TO TAKE NEW PASSWORD AND UPDATE IN DB
@@ -456,89 +446,76 @@ def reset_password_page():
         }
     )
     # Sending email notfication when password reset successfully
-    # password_reset_confirmation_notification(user["email"])
+    password_reset_confirmation_notification(user["email"])
     return jsonify({
         "message": "Password reset successful. Please login."
     }), 200
 
 
+resend.api_key = os.getenv("RESEND_API_KEY")
+
 def password_reset_confirmation_notification(email):
-
-    msg = EmailMessage()
-
-    msg["Subject"] = "✅ Password Reset Successful"
-    msg["From"] = os.getenv("EMAIL_USER")   # ENV variable
-    msg["To"] = email
-
-    # Plain text fallback
-    msg.set_content("""
-Hi,
-
-Your password has been updated successfully.
-
-If you did not request this, please ignore this email.
-
-Thanks,
-Auth System
-""")
-
-    # HTML email
-    msg.add_alternative(f"""
-    <div style="font-family: Arial; background:#f4f6f8; padding:20px;">
-
-        <div style="
-            max-width:500px;
-            margin:auto;
-            background:white;
-            padding:25px;
-            border-radius:10px;
-            box-shadow:0 0 10px rgba(0,0,0,0.1);
-        ">
-
-            <h2 style="color:#28a745;">✅ Password Reset Successful</h2>
-
-            <p>Hello 👋,</p>
-
-            <p>Your password has been <b>updated successfully</b>.</p>
-
-            <div style="
-                background:#f8f9fa;
-                padding:15px;
-                border-radius:8px;
-                margin:15px 0;">
-                If you did not request this change,
-                please secure your account immediately.
-            </div>
-
-            <p style="color:#888; font-size:12px;">
-                This is an automated message. Please do not reply.
-            </p>
-
-        </div>
-
-    </div>
-    """, subtype="html")
 
     try:
 
-        # ✅ SMTP TLS version (Render friendly)
-        server = smtplib.SMTP("smtp.gmail.com", 587)
-        server.starttls()
+        resend.Emails.send({
 
-        server.login(
-            os.getenv("EMAIL_USER"),
-            os.getenv("EMAIL_PASS")
-        )
+            "from": "onboarding@resend.dev",   # 👈 sender email
+            "to": email,
+            "subject": "✅ Password Reset Successful",
 
-        server.send_message(msg)
-        server.quit()
+            "html": f"""
+
+            <div style="background:#f4f6f8; padding:30px; font-family:Arial, sans-serif;">
+
+                <div style="
+                    max-width:500px;
+                    margin:auto;
+                    background:white;
+                    padding:25px;
+                    border-radius:12px;
+                    box-shadow:0 0 12px rgba(0,0,0,0.1);
+                ">
+
+                    <h2 style="color:#28a745; text-align:center;">
+                        ✅ Password Reset Successful
+                    </h2>
+
+                    <p>Hello 👋,</p>
+
+                    <p>
+                        Your password has been 
+                        <b>updated successfully</b>.
+                    </p>
+
+                    <div style="
+                        background:#f8fafc;
+                        padding:15px;
+                        border-radius:8px;
+                        margin:20px 0;
+                        color:#555;
+                    ">
+                        If you did not request this change,
+                        please secure your account immediately.
+                    </div>
+
+                    <p style="font-size:12px; color:#999; text-align:center;">
+                        This is an automated message. Please do not reply.
+                    </p>
+
+                </div>
+
+            </div>
+
+            """
+
+        })
 
         print("✅ Confirmation email sent")
 
     except Exception as e:
         print("❌ Email error:", e)
 
-    
 
 # =========================
 # 🔹 PROTECTED API JWT ENCODING 
