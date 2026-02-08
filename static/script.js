@@ -231,10 +231,10 @@ function forgotPassword() {
         .then(res => res.json())
         .then(data => {
             document.getElementById("forgotMsg").innerText = data.message;
-            if (data.reset_link) {
-                document.getElementById("resetLink").href = data.reset_link;
-                document.getElementById("resetLink").style.display = "inline-block";
-            }
+            // if (data.reset_link) {
+            //     document.getElementById("resetLink").href = data.reset_link;
+            //     document.getElementById("resetLink").style.display = "inline-block";
+            // }
         })
         .catch(err => {
             console.log(err);
@@ -332,7 +332,8 @@ function coverImageInDB() {
     })
         .then(res => res.json())
         .then(data => {
-            document.getElementById("coverPhotoStatus").innerText = data.message;
+            alert(data.message)
+            //document.getElementById("coverPhotoStatus").innerText = data.message;
         })
 
 }
@@ -372,3 +373,35 @@ function updateProfile() {
         });
 
 }
+
+function getLocation(){
+
+    if(navigator.geolocation){
+
+        navigator.geolocation.getCurrentPosition(async function(position){
+
+            const lat = position.coords.latitude;
+            const lon = position.coords.longitude;
+
+            // Reverse geocoding API
+            const response = await fetch(
+                `https://nominatim.openstreetmap.org/reverse?format=json&lat=${lat}&lon=${lon}`
+            );
+
+            const data = await response.json();
+
+            const city =
+                data.address.city ||
+                data.address.town ||
+                data.address.village;
+
+            const country = data.address.country;
+
+            document.getElementById("location").value =
+                city + ", " + country;
+
+        });
+
+    }
+}
+

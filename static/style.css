@@ -1,446 +1,493 @@
 /* ================= RESET ================= */
 
-*{
-    margin:0;
-    padding:0;
-    box-sizing:border-box;
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
     font-family: Arial, Helvetica, sans-serif;
-    }
-    
-    /* ================= BODY ================= */
-    
-    body{
-    height:100vh;
-    background:linear-gradient(135deg,#667eea,#764ba2);
-    display:flex;
-    justify-content:center;
-    align-items:center;
-    }
-    
-    /* ================= AUTH CONTAINER ================= */
-    
-    .container{
+}
+
+/* ================= BODY ================= */
+
+body {
+    height: 100vh;
+    background: linear-gradient(135deg, #667eea, #764ba2);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+/* ================= AUTH CONTAINER ================= */
+
+.container {
     background: rgb(159, 192, 207);
-    width:380px;
-    padding:30px;
-    border-radius:14px;
-    box-shadow:0 15px 35px rgba(0,0,0,0.2);
+    width: 380px;
+    padding: 30px;
+    border-radius: 14px;
+    box-shadow: 0 15px 35px rgba(0, 0, 0, 0.2);
     transition: transform 0.3s ease;
-    }
-    
-    .container:hover{
+}
+
+.container:hover {
     transform: scale(1.05);
-    }
-    
-    .container h2{
-    text-align:center;
-    margin-bottom:20px;
-    color:#333;
-    }
-    
-    /* ================= TABS ================= */
-    
-    .tabs{
-    display:flex;
-    gap:10px;
-    margin-bottom:20px;
-    }
-    
-    .tabs button{
-    flex:1;
-    padding:10px;
-    border:none;
-    background:#eee;
-    border-radius:8px;
-    cursor:pointer;
-    transition:0.3s;
-    }
-    
-    .tabs button:hover{
-    background:#667eea;
-    color:white;
-    }
-    
-    /* ================= CARD ================= */
-    
-    .card{
-    display:flex;
-    flex-direction:column;
-    gap:12px;
-    }
-    
-    .hidden{
-    display:none;
-    }
-    
-    /* ================= INPUTS ================= */
-    
-    input{
-    padding:12px;
-    border-radius:8px;
-    border:1px solid #ccc;
-    outline:none;
-    transition:0.2s;
-    }
-    
-    input:focus{
-    border-color:#667eea;
-    }
-    
-    /* ================= BUTTON ================= */
-    
-    button{
-    padding:12px;
-    border:none;
-    border-radius:8px;
-    background:#667eea;
-    color:rgb(52,81,89);
-    font-weight:bold;
-    cursor:pointer;
-    transition:0.3s;
-    }
-    
-    button:hover{
-    background:#5a6fe0;
-    }
-    
-    /* ================= LINKS ================= */
-    
-    a{
-    text-decoration:none;
-    font-size:14px;
-    color:#667eea;
-    }
-    
-    a:hover{
-    text-decoration:underline;
-    }
-    
-    /* ================= RESET BUTTON ================= */
-    
-    .reset-btn{
-    display:inline-block;
-    text-align:center;
-    padding:12px;
-    border-radius:8px;
-    background:#667eea;
-    color:white;
-    font-weight:bold;
-    margin-top:10px;
-    }
-    
-    /* ================= HOME PROFILE CARD ================= */
-    
-    .profile-card{
-    background: rgb(159,192,207);
-    padding:30px;
-    border-radius:14px;
-    width:350px;
-    text-align:center;
-    box-shadow:0 15px 35px rgba(0,0,0,0.2);
-    transition:0.3s;
-    }
-    
-    .profile-card:hover{
-    transform:scale(1.03);
-    }
-    
-    #user_image{
-    width:120px;
-    height:120px;
-    border-radius:50%;
-    object-fit:cover;
-    margin-bottom:15px;
-    border:3px solid white;
-    }
-    
-    .welcome{
-    font-size:18px;
-    font-weight:bold;
-    margin-bottom:10px;
-    color:#333;
-    }
-    
-    #user_name{
-    font-size:20px;
-    font-weight:bold;
-    color:#2c3e50;
-    }
-    
-    /* ================= PROFILE FORM ================= */
-    
-    .photo-section{
-    text-align:center;
-    margin-bottom:15px;
-    }
-    
-    .form-section{
-    display:flex;
-    flex-direction:column;
-    gap:10px;
-    }
-    
-    label{
-    font-size:14px;
-    font-weight:bold;
-    }
-    
-    /* ================= ADVANCED HOME PAGE ================= */
-    
-    .profile-wrapper{
-    width:700px;
+}
+
+.container h2 {
+    text-align: center;
+    margin-bottom: 20px;
+    color: #333;
+}
+
+/* ================= TABS ================= */
+
+.tabs {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 20px;
+}
+
+.tabs button {
+    flex: 1;
+    padding: 10px;
+    border: none;
+    background: #eee;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: 0.3s;
+}
+
+.tabs button:hover {
+    background: #667eea;
+    color: white;
+}
+
+/* ================= CARD ================= */
+
+.card {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.hidden {
+    display: none;
+}
+
+/* ================= INPUTS ================= */
+
+input {
+    padding: 12px;
+    border-radius: 8px;
+    border: 1px solid #ccc;
+    outline: none;
+    transition: 0.2s;
+}
+
+input:focus {
+    border-color: #667eea;
+}
+
+/* ================= BUTTON ================= */
+
+button {
+    padding: 12px;
+    border: none;
+    border-radius: 8px;
+    background: #667eea;
+    color: rgb(52, 81, 89);
+    font-weight: bold;
+    cursor: pointer;
+    transition: 0.3s;
+}
+
+button:hover {
+    background: #5a6fe0;
+}
+
+/* ================= LINKS ================= */
+
+a {
+    text-decoration: none;
+    font-size: 14px;
+    color: #667eea;
+}
+
+a:hover {
+    text-decoration: underline;
+}
+
+/* ================= RESET BUTTON ================= */
+
+.reset-btn {
+    display: inline-block;
+    text-align: center;
+    padding: 12px;
+    border-radius: 8px;
+    background: #667eea;
+    color: white;
+    font-weight: bold;
+    margin-top: 10px;
+}
+
+/* ================= HOME PROFILE CARD ================= */
+
+.profile-card {
+    background: rgb(159, 192, 207);
+    padding: 30px;
+    border-radius: 14px;
+    width: 350px;
+    text-align: center;
+    box-shadow: 0 15px 35px rgba(0, 0, 0, 0.2);
+    transition: 0.3s;
+}
+
+.profile-card:hover {
+    transform: scale(1.03);
+}
+
+#user_image {
+    width: 140px;
+    height: 140px;
+    border-radius: 50%;
+    object-fit: cover;
+    margin-bottom: 15px;
+    border: 3px solid white;
+}
+
+.welcome {
+    font-size: 18px;
+    font-weight: bold;
+    margin-bottom: 10px;
+    color: #333;
+}
+
+#user_name {
+    font-size: 20px;
+    font-weight: bold;
+    color: #2c3e50;
+}
+
+/* ================= PROFILE FORM ================= */
+
+.photo-section {
+    text-align: center;
+    margin-bottom: 15px;
+}
+
+.form-section {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+label {
+    font-size: 14px;
+    font-weight: bold;
+}
+
+/* ================= ADVANCED HOME PAGE ================= */
+
+.profile-wrapper {
+    width: 1000px;
+    height: 900px;
+    background: rgb(159, 192, 207);
+    border-radius: 14px;
+    overflow: hidden;
+    box-shadow: 0 15px 35px rgba(0, 0, 0, 0.2);
+}
+
+/* cover banner */
+.cover {
+    position:relative;
     height: 500px;
-    background:rgb(159, 192, 207);
-    border-radius:14px;
-    overflow:hidden;
-    box-shadow:0 15px 35px rgba(0,0,0,0.2);
-    }
-    
-    /* cover banner */
-    .cover{
-    height:280px;
-    position:relative;
-    overflow:hidden;
-    background:linear-gradient(135deg,#667eea,#764ba2);
-    }
-    
-    #cover_image{
-    width:100%;
-    height:100%;
-    object-fit:cover;
-    }
-    
-    #coverUpload{
-    position:absolute;
-    bottom:10px;
-    right:10px;
-    background:white;
-    padding:5px;
-    border-radius:6px;
-    }
-    
-    /* profile header */
-    .profile-header{
+    position: relative;
+    overflow: hidden;
+    background: linear-gradient(135deg, #667eea, #764ba2);
+}
+
+#cover_image {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+#coverUpload {
+    position: absolute;
+    bottom: 10px;
+    right: 10px;
+    background: white;
+    padding: 5px;
+    border-radius: 6px;
+}
+
+/* profile header */
+.profile-header {
+    height: 130px;
+    display: flex;
+    align-items: center;
+    padding: 10px;
+    gap: 20px;
+    position: relative;
+}
+
+.profile-header img {
+    width: 120px;
+    height: 120px;
+    border-radius: 50%;
+    object-fit: cover;
+    margin-top: -80px;
+    border: 5px solid white;
+}
+
+.profile-info {
+    margin-top: 5px;
+    margin-bottom: 30px;
+    margin-left: 20px;
+    flex: 1;
+}
+
+/* logout button (top right corner) */
+#logout-btn {
+    position: absolute;
+    margin-top: 20px;
+    top: 59px;     /* sirf top use karo */
+    right: 60px;
+    z-index: 10;
+    background: #ff4d4d;
+    color: white;
+    border: none;
+    padding: 10px 15px;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: 0.3s;
     display:flex;
     align-items:center;
-    padding:20px;
-    gap:20px;
-    position:relative;
-    }
-    
-    .profile-header img{
-    width:120px;
-    height:120px;
-    border-radius:50%;
-    object-fit:cover;
-    margin-top:-80px;
-    border:5px solid white;
-    }
-    
-    .profile-info{
-    flex:1;
-    }
-    
-    /* logout button (top right corner) */
-    #logout-btn{
-    position:absolute;
-    top:20px;
-    right:20px;
-    background:#ff4d4d;
-    color:white;
-    border:none;
-    padding:10px 15px;
-    border-radius:8px;
-    cursor:pointer;
-    transition:0.3s;
-    }
-    
-    #logout-btn:hover{
-    background:#e63939;
-    }
-    
-    /* content grid */
-    .profile-content{
-    display:flex;
-    gap:20px;
-    padding:10px;
-    }
-    
-    .card-box{
-    flex:1;
-    background:#f5f6fa;
-    padding:20px;
-    border-radius:10px;
-    display:flex;
-    flex-direction:column;
-    gap:10px;
-    }
-    
-    /* ================= RESPONSIVE ================= */
-    
-    @media(max-width:450px){
-    .container{
-    width:90%;
-    padding:20px;
-    }
-    }
-    .upload-btn{
-        display:inline-block;
-        padding:10px 15px;
-        background:#667eea;
-        color:white;
-        border-radius:8px;
-        cursor:pointer;
-    }
-/* profile image wrapper */
-.profile-image-wrapper{
-    position:relative;
-    width:120px;
-    }
-    
-    /* camera overlay profile */
-    .camera-overlay{
-    position:absolute;
-    bottom:15px;
-    right:5px;
-    background:rgb(36, 127, 127);
-    color:white;
-    border-radius:50%;
-    width:35px;
-    height:35px;
-    display:flex;
     justify-content:center;
-    align-items:center;
-    cursor:pointer;
+    font-size:18px;
+}
+
+
+#logout-btn:hover {
+    background: #e63939;
+}
+@media(max-width:600px){
+
+    #logout-btn{
+        top:10px;
+        right:10px;
+        padding:8px 12px;
+        font-size:14px;
     }
-    
-    /* cover upload icon */
-    .cover-upload{
-    position:absolute;
-    bottom:10px;
-    right:10px;
-    background:rgb(36, 127, 127);
-    padding:5px 8px;
-    border-radius:50%;
-    cursor:pointer;
+
+}
+
+/* content grid */
+.profile-content {
+    display: flex;
+    gap: 20px;
+    padding: 10px;
+}
+
+.card-box {
+    flex: 1;
+    background: #f5f6fa;
+    padding: 20px;
+    border-radius: 10px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+/* ================= RESPONSIVE ================= */
+
+@media(max-width:450px) {
+    .container {
+        width: 90%;
+        padding: 20px;
     }
-    
-    /* photo status */
-    #photoStatus{
-    font-size:14px;
-    color:green;
-    margin-top:5px;
-    }
-       
-    
+}
+
+.upload-btn {
+    display: inline-block;
+    padding: 10px 15px;
+    background: #667eea;
+    color: white;
+    border-radius: 8px;
+    cursor: pointer;
+}
+
+/* profile image wrapper */
+.profile-image-wrapper {
+    position: relative;
+    width: 120px;
+}
+
+/* camera overlay profile */
+.camera-overlay {
+    position: absolute;
+    bottom: 15px;
+    right: 5px;
+    background: rgb(36, 127, 127);
+    color: white;
+    border-radius: 50%;
+    width: 35px;
+    height: 35px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    cursor: pointer;
+    font-size: 18px;
+    /* 👈 icon size bada */
+}
+
+
+/* cover upload icon */
+.cover-upload {
+    position: absolute;
+    bottom: 10px;
+    right: 10px;
+    background: rgb(36, 127, 127);
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    cursor: pointer;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    font-size: 28px;
+    /* 👈 camera icon size bada */
+}
+
+
+
+/* photo status */
+#photoStatus {
+    font-size: 14px;
+    color: green;
+    margin-top: 5px;
+}
+
+
 /* ================= BEAUTIFUL EDIT PROFILE POPUP ================= */
 
-.modal{
-    position:fixed;
-    inset:0;
-    background:rgba(0,0,0,0.4);
-    backdrop-filter:blur(6px);
+.modal {
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.4);
+    backdrop-filter: blur(6px);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    opacity: 0;
+    visibility: hidden;
+    transition: 0.35s ease;
+    z-index: 9999;
+}
+
+.modal.active {
+    opacity: 1;
+    visibility: visible;
+}
+
+/* popup card */
+
+.modal-content {
+    background: white;
+    width: 420px;
+    padding: 30px;
+    border-radius: 14px;
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.25);
+    transform: translateY(30px) scale(0.95);
+    transition: 0.3s ease;
+    position: relative;
+}
+
+.modal.active .modal-content {
+    transform: translateY(0) scale(1);
+}
+
+/* heading */
+
+.modal-content h3 {
+    margin-bottom: 20px;
+    color: #2c3e50;
+}
+
+/* modern inputs */
+
+.modal-content input {
+    width: 100%;
+    padding: 12px;
+    border-radius: 8px;
+    border: 1px solid #ddd;
+    margin-bottom: 15px;
+    transition: 0.2s;
+}
+.location-row{
     display:flex;
-    justify-content:center;
+    gap:10px;
     align-items:center;
-    opacity:0;
-    visibility:hidden;
-    transition:0.35s ease;
-    z-index:9999;
-    }
-    
-    .modal.active{
-    opacity:1;
-    visibility:visible;
-    }
-    
-    /* popup card */
-    
-    .modal-content{
-    background:white;
-    width:420px;
-    padding:30px;
-    border-radius:14px;
-    box-shadow:0 20px 40px rgba(0,0,0,0.25);
-    transform:translateY(30px) scale(0.95);
-    transition:0.3s ease;
-    position:relative;
-    }
-    
-    .modal.active .modal-content{
-    transform:translateY(0) scale(1);
-    }
-    
-    /* heading */
-    
-    .modal-content h3{
-    margin-bottom:20px;
-    color:#2c3e50;
-    }
-    
-    /* modern inputs */
-    
-    .modal-content input{
-    width:100%;
-    padding:12px;
-    border-radius:8px;
-    border:1px solid #ddd;
-    margin-bottom:15px;
-    transition:0.2s;
-    }
-    
-    .modal-content input:focus{
-    border-color:#667eea;
-    box-shadow:0 0 0 2px rgba(102,126,234,0.2);
-    }
-    
-    /* update button theme match */
-    
-    .modal-content button{
-    background:linear-gradient(135deg,#667eea,#764ba2);
-    color:white;
-    font-weight:bold;
-    }
-    
-    .modal-content button:hover{
-    transform:translateY(-2px);
-    box-shadow:0 8px 15px rgba(0,0,0,0.2);
-    }
-    
-    /* edit profile button */
-    
-    .edit-btn{
-    background:linear-gradient(135deg,#667eea,#764ba2);
-    color:white;
-    padding:10px 18px;
-    border:none;
-    border-radius:8px;
-    cursor:pointer;
-    transition:0.3s;
-    }
-    
-    .edit-btn:hover{
-    transform:translateY(-2px);
-    box-shadow:0 5px 15px rgba(21, 110, 125, 0.2);
-    }
-    
-    /* close icon */
-    
-    .close-btn{
-    position:absolute;
-    top:15px;
-    right:18px;
-    font-size:18px;
-    cursor:pointer;
-    color:#999;
-    }
-    
-    .close-btn:hover{
-    color:black;
-    }
-    
-    /*Hover part on profile iamge and cover_image  */
+}
+
+.location-row input{
+    flex:1; 
+    margin-top: 16px;  /* input space le lega */
+}
 
 
-/* ===== hover message ===== */
+.modal-content input:focus {
+    border-color: #667eea;
+    box-shadow: 0 0 0 2px rgba(102, 126, 234, 0.2);
+}
 
+/* update button theme match */
+
+.modal-content button {
+    background: linear-gradient(135deg, #667eea, #764ba2);
+    color: white;
+    font-weight: bold;
+}
+
+.modal-content button:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 15px rgba(0, 0, 0, 0.2);
+}
+
+/* edit profile button */
+
+.edit-btn {
+    background: linear-gradient(135deg, #667eea, #764ba2);
+    color: white;
+    padding: 10px 18px;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: 0.3s;
+}
+
+.edit-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 5px 15px rgba(21, 110, 125, 0.2);
+}
+
+/* close icon */
+
+.close-btn {
+    position: absolute;
+    top: 15px;
+    right: 18px;
+    font-size: 18px;
+    cursor: pointer;
+    color: #999;
+}
+
+.close-btn:hover {
+    color: black;
+}
+
+/*Hover part on profile iamge and cover_image  */
+
+
+/* ===== side bar ===== */
