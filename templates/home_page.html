@@ -4,94 +4,153 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>User Profile</title>
+    <title>User Home</title>
+    <link rel="stylesheet" href="/static/style.css">
 
-    <style>
-        body {
-            margin: 0;
-            padding: 0;
-            font-family: Arial, sans-serif;
-            background: linear-gradient(135deg, #0f172a, #1e293b);
-            height: 100vh;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
+<style>
 
-        .profile-card {
-            background: #020617;
-            width: 360px;
-            padding: 35px 25px;
-            border-radius: 15px;
-            text-align: center;
-            box-shadow: 0 15px 40px rgba(0, 0, 0, 0.4);
-            border: 1px solid rgba(255, 255, 255, 0.05);
-        }
+/* 🔥 POPUP MODAL CSS */
 
-        .profile-card img {
-            width: 120px;
-            height: 120px;
-            border-radius: 50%;
-            object-fit: cover;
-            border: 3px solid #667eea;
-            margin-bottom: 15px;
-        }
+.modal{
+    display:none;
+    position:fixed;
+    top:0;
+    left:0;
+    width:100%;
+    height:100%;
+    background:rgba(0,0,0,0.6);
+    justify-content:center;
+    align-items:center;
+    z-index:999;
+}
 
-        .welcome {
-            font-size: 22px;
-            font-weight: bold;
-            color: #ffffff;
-            margin-bottom: 10px;
-        }
+.modal.active{
+    display:flex;
+}
 
-        #user_name {
-            color: white;
-            font-size: 18px;
-            font-weight: bold;
-            background: #667eea;
-            padding: 8px 15px;
-            border-radius: 8px;
-            display: inline-block;
-            margin-top: 10px;
-            margin-bottom: 20px;
-        }
+.modal-content{
+    background:white;
+    padding:25px;
+    border-radius:10px;
+    width:350px;
+    animation: popupAnim 0.3s ease;
+}
 
-        #logout-btn {
-            padding: 10px 18px;
-            background: linear-gradient(135deg, #667eea, #4f46e5);
-            color: white;
-            border: none;
-            border-radius: 8px;
-            cursor: pointer;
-            font-size: 14px;
-            transition: 0.3s;
-        }
+@keyframes popupAnim{
+    from{transform:scale(0.8); opacity:0;}
+    to{transform:scale(1); opacity:1;}
+}
 
-        #logout-btn:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
-        }
-    </style>
+.edit-btn{
+    background:#111;
+    color:white;
+    border:none;
+    padding:8px 14px;
+    cursor:pointer;
+    border-radius:6px;
+}
+
+.close-btn{
+    float:right;
+    cursor:pointer;
+    font-weight:bold;
+}
+
+</style>
+
 </head>
 
 <body>
 
-    <div class="profile-card">
+<div class="profile-wrapper">
 
-        <img id="user_image"
-            src="https://res.cloudinary.com/dls79lzyn/image/upload/v1770363924/default_user_profile_bx8coo.jpg"
-            alt="User Photo">
+    <!-- COVER IMAGE -->
+    <div class="cover">
+        <img id="cover_image" src="https://images.unsplash.com/photo-1501785888041-af3ef285b470">
 
-        <div class="welcome">Welcome Back 👋</div>
+        <label for="coverUpload" class="cover-upload">📷</label>
 
-        <div id="user_name">loading...</div>
-        <br>
-        <button id="logout-btn" onclick="logout()">Logout</button>
+        <input type="file" id="coverUpload" hidden>
+        <div id="coverPhotoStatus"></div>
     </div>
 
-    <!-- JS FILE -->
-    <script src="/static/script.js"></script>
+    <!-- PROFILE HEADER -->
+    <div class="profile-header">
+
+        <div class="profile-image-wrapper">
+            <img id="user_image"
+            src="https://res.cloudinary.com/dls79lzyn/image/upload/v1770363924/default_user_profile_bx8coo.jpg">
+
+            <label for="photoUpload" class="camera-overlay">📷</label>
+
+            <input type="file" id="photoUpload" hidden>
+        </div>
+
+        <div class="profile-info">
+            <h2 id="user_name">Loading...</h2>
+            <p id="user_dashboard"></p>
+            <div id="photoStatus"></div>
+        </div>
+
+        <button id="logout-btn" onclick="logout()">Logout</button>
+
+    </div>
+
+    <!-- CONTENT -->
+    <div class="profile-content">
+        <div class="card-box">
+
+            <h3>Profile Details</h3>
+
+            <button class="edit-btn" onclick="openModal()">Edit Profile</button>
+
+        </div>
+    </div>
+
+</div>
+
+<!-- 🔥 POPUP MODAL -->
+<div id="profileModal" class="modal" onclick="outsideClick(event)">
+
+    <div class="modal-content">
+
+        <span class="close-btn" onclick="closeModal()">X</span>
+
+        <h3>Edit Profile</h3>
+
+        <input type="text" id="username" placeholder="username">
+        <input type="text" id="bio" placeholder="bio">
+        <!-- <h4>Change Profile Photo</h4>
+        <input type="file" id="pop_up_profile_photo"  accept="image/*">
+        <h4>Change Cover Photo</h4>
+        <input type="file" id="pop_up_cover_photo"  accept="image/*"> -->
+        <button onclick="updateProfile()">Update Profile</button>
+
+    </div>
+
+</div>
+
+
+
+<script>
+
+function openModal(){
+    document.getElementById("profileModal").classList.add("active");
+}
+
+function closeModal(){
+    document.getElementById("profileModal").classList.remove("active");
+}
+
+function outsideClick(event){
+    if(event.target.id === "profileModal"){
+        closeModal();
+    }
+}
+
+</script>
+
+<script src="/static/script.js"></script>
 
 </body>
-
 </html>
