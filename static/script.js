@@ -153,7 +153,8 @@ window.onload = function () {
             }
 
             document.getElementById("user_name").innerText = data.name || "Please Login";
-
+            document.getElementById("user_dashboard").innerHTML = data.bio;
+            document.getElementById("cover_image").src = data.cover_photo
         });
 
 }
@@ -272,4 +273,102 @@ function resetPassword() {
         .then(data => {
             msg.innerText = data.message;
         })
+}
+////////////homepage
+// profile photo preview
+document.getElementById("photoUpload").addEventListener("change", function (e) {
+
+    const file = e.target.files[0];
+
+    if (file) {
+        document.getElementById("user_image").src =
+            URL.createObjectURL(file);
+            document.getElementById("photoStatus").innerText="Photo Uploading..."
+        uploadImageInDB()
+    }
+
+});
+function uploadImageInDB() {
+    //alert("photo updated ")
+    const profile_image = document.getElementById("photoUpload").files[0]
+    const image_data = new FormData()
+    image_data.append("profile_image", profile_image);
+    fetch(`${API}/upload_profile_image`, {
+        method: "POST",
+        headers: {
+            "Authorization": localStorage.getItem("token")
+        },
+        body: image_data
+    })
+        .then(res => res.json())
+        .then(data => {
+            document.getElementById("photoStatus").innerText = data.message;
+        })
+
+}
+// cover preview
+document.getElementById("coverUpload").addEventListener("change", function (e) {
+
+    const file = e.target.files[0];
+
+    if (file) {
+        document.getElementById("cover_image").src =
+            URL.createObjectURL(file);
+        coverImageInDB()
+    }
+});
+
+function coverImageInDB() {
+    //alert("photo updated ")
+    const cover_image =document.getElementById("coverUpload").files[0]
+    const cover_image_data = new FormData()
+    cover_image_data.append("cover_image", cover_image);
+    fetch(`${API}/upload_cover_image`, {
+        method: "POST",
+        headers: {
+            "Authorization": localStorage.getItem("token")
+        },
+        body: cover_image_data
+    })
+        .then(res => res.json())
+        .then(data => {
+            document.getElementById("coverPhotoStatus").innerText = data.message;
+        })
+
+}
+
+
+function updateProfile() {
+    const formData = new FormData();
+    formData.append("username", document.getElementById("username").value);
+    formData.append("bio", document.getElementById("bio").value);
+    // const photo = document.getElementById("pop_up_profile_photo").files[0]
+    // const cover_photo = document.getElementById("pop_up_cover_photo").files[0];
+    // if (photo) {
+    //     formData.append("photo", photo);
+    // }
+    // if (cover_photo) {
+    //     formData.append("cover_photo", cover_photo);
+    // }
+    fetch("/update_profile", {
+        method: "POST",
+        headers: {
+            "Authorization": localStorage.getItem("token")
+        },
+        body: formData
+    })
+        .then(async res => {
+
+            const text = await res.text();
+            console.log("RAW RESPONSE:", text);
+
+            return JSON.parse(text);
+
+        })
+        .then(data => {
+            alert(data.message);
+            window.location.reload();
+
+        });
+
 }

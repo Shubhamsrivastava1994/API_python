@@ -85,7 +85,10 @@ def register():
         "name":name,
         "email": email,
         "password": hashed_password,
-        "createdAt": datetime.now(timezone.utc)
+        "createdAt": datetime.now(timezone.utc),
+        "bio":"Add Bio",
+        "cover_photo":"https://images.unsplash.com/photo-1501785888041-af3ef285b470"
+
     }
 
     # PHOTO UPLOAD (optional)
@@ -110,7 +113,30 @@ def register():
 # ==========================
 # 🔹 USER REGISTER API END
 # ==========================
-   
+# ========================
+# token required
+# ========================
+
+
+def token_required(f):
+
+    @wraps(f)
+    def decorated(*args, **kwargs):
+
+        token = request.headers.get("Authorization")
+
+        if not token:
+            return jsonify({"message":"Token missing"}), 401
+
+        try:
+            data = jwt.decode(token, SECRET_KEY, algorithms=["HS256"])
+        except:
+            return jsonify({"message":"Invalid token"}), 401
+
+        return f(data, *args, **kwargs)
+
+    return decorated
+
 # ========================
 # PAGE RENDER CONFIG/API
 # ========================
@@ -154,7 +180,7 @@ def home_page_api():
 
     if not user:
         return jsonify({"error": "User not found"}), 404
-
+    
     # return jsonify({
     #     "email": user["email"],
     #     "image":user["profilePhoto"]["url"],
@@ -164,6 +190,8 @@ def home_page_api():
     "email": user["email"],
     "image": (user.get("profilePhoto") or {}).get("url"),
     "name": user["name"],
+    "bio":user["bio"],
+    "cover_photo":user["cover_photo"]
 })
 
 
@@ -539,6 +567,127 @@ def profile():
         return jsonify({"message": "Token expired"}), 401
     except jwt.InvalidTokenError:
         return jsonify({"message": "Invalid token"}), 401
+
+# ===========================
+    # update Profile API
+# ===========================
+    
+@app.route("/update_profile", methods=["POST"])
+@token_required
+def update_profile(user):
+
+    username = request.form.get("username")
+    bio = request.form.get("bio")
+
+    # photo_url = None
+    # cover_photo_url = None
+
+    # # 🔹 Profile Photo Upload
+    # if "photo" in request.files:
+    #     photo = request.files["photo"]
+
+    #     if photo.filename != "":
+    #         photo_upload_result = cloudinary.uploader.upload(photo)
+    #         photo_url = photo_upload_result["secure_url"]
+
+    # # 🔹 Cover Photo Upload
+    # if "cover_photo" in request.files:
+    #     cover_image = request.files["cover_photo"]
+
+    #     if cover_image.filename != "":
+    #         cover_upload_result = cloudinary.uploader.upload(cover_image)
+    #         cover_photo_url = cover_upload_result["secure_url"]
+
+    # 🔹 Update data
+    update_data = {}
+
+    if username:
+     update_data["name"] = username
+
+    if bio:
+     update_data["bio"] = bio
+
+    # if photo_url:
+    #  update_data["profilePhoto.url"] = photo_url
+
+    # if cover_photo_url:
+    #   update_data["cover_photo"] = cover_photo_url
+
+    # 🔹 DB Update
+    users.update_one(
+        {"_id": ObjectId(user["user_id"])},
+        {"$set": update_data}
+    )
+    return jsonify({"message": "Profile updated successfully"})
+
+@app.route("/upload_profile_image",methods = ["POST"])
+@token_required
+def update_profile_image(user):
+
+    try:
+
+        profile_photo = request.files.get("profile_image")
+        profile_image_url = None
+
+        # upload only if file exists
+        if profile_photo and profile_photo.filename != "":
+            upload_result = cloudinary.uploader.upload(profile_photo)
+            profile_image_url = upload_result.get("secure_url")
+
+            # update DB
+            users.update_one(
+                {"_id": ObjectId(user["user_id"])},
+                {"$set": {"profilePhoto.url": profile_image_url}}
+            )
+
+        return jsonify({
+            "success": True,
+            "message": "Profile photo uploaded successfully",
+            "image_url": profile_image_url,
+        })
+
+    except Exception as e:
+
+        print("Upload error:", e)
+
+        return jsonify({
+            "success": False,
+            "message": "Image upload failed. Please try again."
+        }), 500
+
+@app.route("/upload_cover_image",methods = ["POST"])
+@token_required
+def update_cover_image(user):
+     try:
+
+        cover_photo = request.files.get("cover_image")
+        cover_image_url = None
+
+        # upload only if file exists
+        if cover_photo and cover_photo.filename != "":
+            upload_result = cloudinary.uploader.upload(cover_photo)
+            cover_image_url = upload_result.get("secure_url")
+
+            # update DB
+            users.update_one(
+                {"_id": ObjectId(user["user_id"])},
+                {"$set": {"cover_photo": cover_image_url}}
+            )
+
+        return jsonify({
+            "success": True,
+            "message": "Cover photo uploaded successfully",
+            "image_url": cover_image_url,
+        })
+
+     except Exception as e:
+
+        print("Upload error:", e)
+
+        return jsonify({
+            "success": False,
+            "message": "Cover photo upload failed. Please try again."
+        }), 500
 
 
 # =========================
