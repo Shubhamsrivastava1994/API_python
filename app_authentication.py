@@ -288,7 +288,9 @@ def forgot_password():
             }
         }
     )
-    reset_link = f"https://api-python-myhh.onrender.com/reset_password/{reset_token}" 
+    # for versal
+    reset_link = f"https://api-python-kappa.vercel.app/reset_password/{reset_token}"
+    # reset_link = f"https://api-python-myhh.onrender.com/reset_password/{reset_token}" 
     # reset_link = f"http://127.0.0.1:5000/reset_password/{reset_token}"
 
     try:
